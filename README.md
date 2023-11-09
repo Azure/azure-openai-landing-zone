@@ -1,14 +1,18 @@
-# Project
+## Azure Open AI Landing Zone Solution Accelerator
+### Overview
+The goal of this landing zone solution accelerator is to help you quickly set up your development and production environments for your Generative AI solution built with Azure Open AI and Azure Services. We provide deployment templates for common Gen AI solution patterns and allow you to customize based on your own scenario. We also recommend best practices about technologies to use in each scenario.
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+Gen AI solution scenarios
+GenAI is a rapidly growing field so the application patterns are also changing quickly. We try to capture the major patterns we observe as of the release of this repository. 
+Your scenario may belong to one of the following pattern or it can be a combination of some of them. There are of courses application scenarios that are not listed here however for technology deployment, you may still benefit from our templates.
 
-As the maintainer of this project, please make a few updates:
+<img width="1159" alt="image" src="media/gen_ai_use_cases.png">
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+### Foundation Infrastructure 
+### Summarization
+### Retrieval Augmented Generation 
+### Data Driven Decisioning
+### Autonomous Intelligent Agent
 
 ## Contributing
 
