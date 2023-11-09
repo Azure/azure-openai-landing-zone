@@ -1,22 +1,24 @@
-## Azure Open AI Landing Zone Solution Accelerator
-### Overview
-The goal of this landing zone solution accelerator is to help you quickly set up your development and production environments for your Generative AI solution built with Azure Open AI and Azure Services. We provide deployment templates for common Gen AI solution patterns and allow you to customize based on your own scenario. We also recommend best practices about technologies to use in each scenario.
-### How to use this solution accelerator
-Start with the foundation section where you will find guidelines and templates to setup common infrastructure for all Gen AI application scenarios such as Azure Open AI service, Azure AI studio and network security.
-Then depending on your application scenario, follow one of the patterns below to setup services specific to your scenario.
+## Azure Open AI Landing Zone Solution Accelerator  
+### Overview  
+The goal of this landing zone solution accelerator is to help you quickly set up your development and production environments for your Generative AI solution built with Azure Open AI and Azure Services. We provide deployment templates for common Gen AI solution patterns and allow you to customize based on your own scenario. We also recommend best practices about technologies to use in each scenario.  
+### How to use this solution accelerator  
+Start with the foundation section where you will find guidelines and templates to setup common infrastructure for all Gen AI application scenarios such as Azure Open AI service, Azure AI studio and network security.  
+Then depending on your application scenario, follow one of the patterns below to setup services specific to your scenario.  
+&nbsp;  
+### Review of Gen AI solution scenarios  
+- GenAI is a rapidly growing field so the application patterns are also changing quickly. We try to capture the major patterns we observe as of the release of this repository.   
+- Your scenario may belong to one of the following pattern or it can be a combination of some of them. There are of courses application scenarios that are not listed here however for technology deployment, you may still benefit from our templates.  
+&nbsp;  
+![Gen AI Use Cases](media/gen_ai_use_cases.png)  
+&nbsp;  
+### [Set up Foundation Infrastructure](./foundation/)  
+### Set up Scenario Specific Services    
+- #### [Summarization](./scenarios/summarization/)  
+- #### [Retrieval Augmented Generation](./scenarios/rag/)  
+- #### [Data Driven Decisioning](./scenarios/data_driven_decisioning/)  
+- #### [Autonomous Intelligent Agent](./scenarios/autonomous_agent/)  
+&nbsp;  
 
-### Review of Gen AI solution scenarios
-- GenAI is a rapidly growing field so the application patterns are also changing quickly. We try to capture the major patterns we observe as of the release of this repository. 
-- Your scenario may belong to one of the following pattern or it can be a combination of some of them. There are of courses application scenarios that are not listed here however for technology deployment, you may still benefit from our templates.
-
-![Gen AI Use Cases](media/gen_ai_use_cases.png)
-
-### [Setup Foundation Infrastructure](./foundation/)
-### Setup Scenario Specific Services  
-- #### [Summarization](./scenarios/summarization/)
-- #### [Retrieval Augmented Generation](./scenarios/rag/)
-- #### [Data Driven Decisioning](./scenarios/data_driven_decisioning/)
-- #### [Autonomous Intelligent Agent](./scenarios/autonomous_agent/)
 
 ## Contributing
 
