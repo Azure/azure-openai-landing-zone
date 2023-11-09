@@ -2,17 +2,18 @@
 ### Overview
 The goal of this landing zone solution accelerator is to help you quickly set up your development and production environments for your Generative AI solution built with Azure Open AI and Azure Services. We provide deployment templates for common Gen AI solution patterns and allow you to customize based on your own scenario. We also recommend best practices about technologies to use in each scenario.
 
-Gen AI solution scenarios
-GenAI is a rapidly growing field so the application patterns are also changing quickly. We try to capture the major patterns we observe as of the release of this repository. 
-Your scenario may belong to one of the following pattern or it can be a combination of some of them. There are of courses application scenarios that are not listed here however for technology deployment, you may still benefit from our templates.
+#### Gen AI solution scenarios
+- GenAI is a rapidly growing field so the application patterns are also changing quickly. We try to capture the major patterns we observe as of the release of this repository. 
+- Your scenario may belong to one of the following pattern or it can be a combination of some of them. There are of courses application scenarios that are not listed here however for technology deployment, you may still benefit from our templates.
 
-<img width="1159" alt="image" src="media/gen_ai_use_cases.png">
+![Gen AI Use Cases](media/gen_ai_use_cases.png)
 
-### Foundation Infrastructure 
-### Summarization
-### Retrieval Augmented Generation 
-### Data Driven Decisioning
-### Autonomous Intelligent Agent
+### [Foundation Infrastructure](./foundation/)
+### Scenarios 
+- #### [Summarization](./scenarios/summarization/)
+- #### [Retrieval Augmented Generation](./scenarios/rag/)
+- #### [Data Driven Decisioning](./scenarios/data_driven_decisioning/)
+- #### [Autonomous Intelligent Agent](./scenarios/autonomous_agent/)
 
 ## Contributing
 
@@ -35,3 +36,4 @@ trademarks or logos is subject to and must follow
 [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
 Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
 Any use of third-party trademarks or logos are subject to those third-party's policies.
+
