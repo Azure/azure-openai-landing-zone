@@ -19,7 +19,7 @@ To deploy Azure OpenAI using Bicep, you need to have the following:
 
 ## Deployment Steps
 
-# Azure Login Steps
+### Azure Login Steps
 
 Follow these steps to log into your Azure account using the Azure CLI.
 
