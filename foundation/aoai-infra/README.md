@@ -37,11 +37,23 @@ Follow these steps to log into your Azure account using the Azure CLI.
     az account set --subscription "<your-subscription-id>"
     ```
 
-3. **Deploy to Azure Resource**:
+3. **Deploy to Azure Resource Group**:
 
     Replace `<existing-resource-group>` with your existing Azure resource group:
     ```
     az deployment group create --resource-group "<existing-resource-group>" --template-file .\main.bicep --parameters .\main.bicepparam
+
+4. **Test Azure OpenAI Endpoint**:
+
+   - For Bash:
+     ```bash
+     ./test.sh
+     ```
+
+   - For PowerShell:
+     ```powershell
+     .\test.ps1
+     ```
 
 
  
