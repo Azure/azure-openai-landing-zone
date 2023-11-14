@@ -1,0 +1,10 @@
+{
+    "location": "northcentralus",
+    "aoaiServiceName": "aoai-7uj23hng7h22c-northcentralus",
+    "privateEndpointName": "aoai-7uj23hng7h22c-northcentralus-pe",
+    "vnetRgName": "vnet",
+    "privateDNSZoneRgName": "vnet",
+    "vnetName": "vnet-westus",
+    "vnetLocation": "westus",
+    "subnetName": "default"
+}
