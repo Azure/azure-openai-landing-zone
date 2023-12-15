@@ -1,7 +1,7 @@
-# Azure OpenAI Bicep Deployment
+# Azure AI Studio Bicep Deployment
 
-This guide provides step-by-step instructions for deploying Azure OpenAI services using Bicep templates. Before proceeding, ensure you meet all the prerequisites listed below.
-This deploys Azure OpenAI resource to Virtual Network with Private Endpoints and configures Role Based access control.
+
+
 
 ## Prerequisites
 
@@ -41,44 +41,58 @@ Follow these steps to log into your Azure account using the Azure CLI.
 
     Replace `<existing-resource-group>` with your existing Azure resource group:
     ```
-    az deployment group create --resource-group "<existing-resource-group>" --template-file .\main.bicep --parameters .\main.bicepparam
+    az deployment group create --resource-group "<existing-resource-group>" --template-file .\azure-ai.bicep --parameters .\azure-ai.bicepparam
 
 4. **Test Azure OpenAI Endpoint**:
 
    - For Bash:
-     ```bash
-     ./test.sh
-     ```
+    ```bash
+    ./test.sh
+    ```
 
    - For PowerShell:
-     ```powershell
-     .\test.ps1
-     ```
+    ```powershell
+    .\test.ps1
+    ```
 
 
- az network private-endpoint show --name azure-ai-7uj23hng7h22c-westus-pe --resource-group test-azure-ai-rg --query 'networkInterfaces[*].id' --output table
+5. **Retrieve Private IP Address and FQDNs and Configure DNS
 
- az network nic show --ids /subscriptions/f1a8fafd-a8a3-46d8-bb5e-01deb63d275d/resourceGroups/test-azure-ai-rg/providers/Microsoft.Network/networkInterfaces/azure-ai-7uj23hng7h22c-westus-pe.nic.e4f1eb0b-c539-4fef-96b0-1291e56ab5e1 --query 'ipConfigurations[*].{IPAddress: privateIPAddress, FQDNs: privateLinkConnectionProperties.fqdns}'
+    ```
+  
+    az network private-endpoint show --name azure-ai-7uj23hng7h22c-westus-pe --resource-group test-azure-ai-rg --query 'networkInterfaces[*].id' --output table
+
+    ```
+    az network nic show --ids <resource-id from above> --query 'ipConfigurations[*].{IPAddress: privateIPAddress, FQDNs: privateLinkConnectionProperties.fqdns}'
+
+    #### Expected output
+
+    ```
+    [  
+      {
+        "FQDNs": [
+          "60ae06e1-d146-4d1b-8e3b-b6a9590afae2.workspace.westus.api.azureml.ms",
+          "60ae06e1-d146-4d1b-8e3b-b6a9590afae2.workspace.westus.cert.api.azureml.ms"
+        ],
+        "IPAddress": "10.0.2.105"
+      },
+      {
+        "FQDNs": [
+          "ml-azure-ai-7uj23hn-westus-60ae06e1-d146-4d1b-8e3b-b6a9590afae2.westus.notebooks.azure.net"
+        ],
+        "IPAddress": "10.0.2.106"
+      },
+      {
+        "FQDNs": [
+          "*.60ae06e1-d146-4d1b-8e3b-b6a9590afae2.inference.westus.api.azureml.ms"
+        ],
+        "IPAddress": "10.0.2.107"
+      }
+    ]
+    ```
 
 
- [
-  {
-    "FQDNs": [
-      "60ae06e1-d146-4d1b-8e3b-b6a9590afae2.workspace.westus.api.azureml.ms",
-      "60ae06e1-d146-4d1b-8e3b-b6a9590afae2.workspace.westus.cert.api.azureml.ms"
-    ],
-    "IPAddress": "10.0.2.105"
-  },
-  {
-    "FQDNs": [
-      "ml-azure-ai-7uj23hn-westus-60ae06e1-d146-4d1b-8e3b-b6a9590afae2.westus.notebooks.azure.net"
-    ],
-    "IPAddress": "10.0.2.106"
-  },
-  {
-    "FQDNs": [
-      "*.60ae06e1-d146-4d1b-8e3b-b6a9590afae2.inference.westus.api.azureml.ms"
-    ],
-    "IPAddress": "10.0.2.107"
-  }
-]
+### Limitations
+
+1. Private Azure AI services and Azure AI Search aren't supported.
+2. The "Add your data" feature in the Azure AI Studio playground doesn't support private storage account.

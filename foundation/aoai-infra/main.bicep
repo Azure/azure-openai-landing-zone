@@ -14,6 +14,8 @@
   'westeurope'
 ])
 param location string = 'northcentralus'
+
+
 @allowed([
   'gpt-4'
   'gpt-4-32k'
@@ -30,7 +32,7 @@ For e.g to provision 30K TPM, set capacity to 30. Max value of capacity is 300.
 ''')
 param capacity int[]
 
-@description('That name is the name of our application. It has to be unique.Type a name followed by your resource group name. (<name>-<resourceGroupName>)')
+@description('Name of our Azure OpenAI Resource. It has to be unique.Type a name followed by your resource group name. (<name>-<resourceGroupName>)')
 param aoaiServiceName string //= 'aoai-${uniqueString(resourceGroup().id)}-${location}'
 
 @description('Azure OpenAI deployment name.')
