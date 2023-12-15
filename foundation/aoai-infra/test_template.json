@@ -1,0 +1,146 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspaces_azure_ai_studio_vnet_name": {
+            "defaultValue": "azure-ai-studio-vnet",
+            "type": "String"
+        },
+        "storageAccounts_azureaistudiov8486671361_externalid": {
+            "defaultValue": "/subscriptions/f1a8fafd-a8a3-46d8-bb5e-01deb63d275d/resourceGroups/ai-studio-vnet/providers/Microsoft.Storage/storageAccounts/azureaistudiov8486671361",
+            "type": "String"
+        },
+        "vaults_azureaistudiov6732651034_externalid": {
+            "defaultValue": "/subscriptions/f1a8fafd-a8a3-46d8-bb5e-01deb63d275d/resourceGroups/ai-studio-vnet/providers/Microsoft.KeyVault/vaults/azureaistudiov6732651034",
+            "type": "String"
+        },
+        "components_azureaistudiov0469388460_externalid": {
+            "defaultValue": "/subscriptions/f1a8fafd-a8a3-46d8-bb5e-01deb63d275d/resourceGroups/ai-studio-vnet/providers/Microsoft.Insights/components/azureaistudiov0469388460",
+            "type": "String"
+        },
+        "registries_azureaistidiovnet2012100_externalid": {
+            "defaultValue": "/subscriptions/f1a8fafd-a8a3-46d8-bb5e-01deb63d275d/resourceGroups/ai-studio-vnet/providers/Microsoft.ContainerRegistry/registries/azureaistidiovnet2012100",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces",
+            "apiVersion": "2023-10-01",
+            "name": "[parameters('workspaces_azure_ai_studio_vnet_name')]",
+            "location": "westus",
+            "sku": {
+                "name": "Basic",
+                "tier": "Basic"
+            },
+            "kind": "Hub",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "friendlyName": "Azure ai studio vnet",
+                "storageAccount": "[parameters('storageAccounts_azureaistudiov8486671361_externalid')]",
+                "keyVault": "[parameters('vaults_azureaistudiov6732651034_externalid')]",
+                "applicationInsights": "[parameters('components_azureaistudiov0469388460_externalid')]",
+                "hbiWorkspace": false,
+                "managedNetwork": {
+                    "isolationMode": "AllowInternetOutbound",
+                    "outboundRules": {
+                        "__SYS_PE_azure-ai-studio-vnet_amlworkspace": {
+                            "type": "PrivateEndpoint",
+                            "destination": {
+                                "serviceResourceId": "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_azure_ai_studio_vnet_name'))]",
+                                "subresourceTarget": "amlworkspace",
+                                "sparkEnabled": true,
+                                "sparkStatus": "Active"
+                            },
+                            "status": "Active",
+                            "category": "Required"
+                        }
+                    },
+                    "status": {
+                        "status": "Active",
+                        "sparkReady": false
+                    }
+                },
+                "v1LegacyMode": false,
+                "containerRegistry": "[parameters('registries_azureaistidiovnet2012100_externalid')]",
+                "publicNetworkAccess": "Disabled",
+                "discoveryUrl": "https://b97ba732-1d9b-4170-9994-306f8b05e596.workspace.westus.api.azureml.ms/discovery/workspaces/b97ba732-1d9b-4170-9994-306f8b05e596"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/connections",
+            "apiVersion": "2023-10-01",
+            "name": "[concat(parameters('workspaces_azure_ai_studio_vnet_name'), '/anildwaaisearch-vnet')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_azure_ai_studio_vnet_name'))]"
+            ],
+            "properties": {
+                "category": "CognitiveSearch",
+                "target": "https://anildwaaisearch-vnet.search.windows.net"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/connections",
+            "apiVersion": "2023-10-01",
+            "name": "[concat(parameters('workspaces_azure_ai_studio_vnet_name'), '/Default_AzureAIContentSafety')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_azure_ai_studio_vnet_name'))]"
+            ],
+            "properties": {
+                "category": "CognitiveService",
+                "target": "https://azureaistudiov2018567726.cognitiveservices.azure.com/"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/connections",
+            "apiVersion": "2023-10-01",
+            "name": "[concat(parameters('workspaces_azure_ai_studio_vnet_name'), '/Default_AzureOpenAI')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_azure_ai_studio_vnet_name'))]"
+            ],
+            "properties": {
+                "category": "AzureOpenAI",
+                "target": "https://azureaistudiov2018567726.openai.azure.com/"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/privateEndpointConnections",
+            "apiVersion": "2023-10-01",
+            "name": "[concat(parameters('workspaces_azure_ai_studio_vnet_name'), '/', parameters('workspaces_azure_ai_studio_vnet_name'), '.7a9a1b4c-37a2-40fd-91ed-0d252b70409e')]",
+            "location": "westus",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_azure_ai_studio_vnet_name'))]"
+            ],
+            "properties": {
+                "provisioningState": "Succeeded",
+                "privateEndpoint": {},
+                "privateLinkServiceConnectionState": {
+                    "status": "Approved",
+                    "description": "Auto-Approved",
+                    "actionsRequired": "None"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/privateEndpointConnections",
+            "apiVersion": "2023-10-01",
+            "name": "[concat(parameters('workspaces_azure_ai_studio_vnet_name'), '/', parameters('workspaces_azure_ai_studio_vnet_name'), '.a36d4deb-c585-4e41-9817-c009be1a59ff')]",
+            "location": "westus",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_azure_ai_studio_vnet_name'))]"
+            ],
+            "properties": {
+                "provisioningState": "Succeeded",
+                "privateEndpoint": {},
+                "privateLinkServiceConnectionState": {
+                    "status": "Approved",
+                    "description": "Auto approved by Azure Machine Learning",
+                    "actionsRequired": "None"
+                }
+            }
+        }
+    ]
+}

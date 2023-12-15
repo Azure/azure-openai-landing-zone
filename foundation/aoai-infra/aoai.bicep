@@ -12,8 +12,9 @@
   'switzerlandnorth'
   'uksouth'
   'westeurope'
+  'westus'
 ])
-param location string = 'northcentralus'
+param location string = 'westus'
 
 
 @description('That name is the name of our application. It has to be unique.Type a name followed by your resource group name. (<name>-<resourceGroupName>)')
