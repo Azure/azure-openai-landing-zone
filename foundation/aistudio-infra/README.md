@@ -92,7 +92,27 @@ Follow these steps to log into your Azure account using the Azure CLI.
     ```
 
 
+
+
 ### Limitations
 
 1. Private Azure AI services and Azure AI Search aren't supported.
 2. The "Add your data" feature in the Azure AI Studio playground doesn't support private storage account.
+3. Prompt flow - Workspace hub / lean workspace and AI studio don't support bring your own virtual network.
+[Please see this for more details.](https://learn.microsoft.com/en-us/azure/machine-learning/prompt-flow/how-to-secure-prompt-flow?view=azureml-api-2)
+
+ az extension update -n ml
+az ml workspace provision-network -g hh8 -n ai-lhq2xx4elldpw
+
+
+ Allow Azure services on the trusted services list to access this storage account 
+
+
+ ### Issues
+
+ 1. new project from AI Studio shows created but project cannot be found or takes while to show up with Vnet enabled. 
+ 2. new project creation needs storage and kv with publicnetwork while provisioned. 
+ Private Azure AI services and Azure AI Search aren't supported.
+The "Add your data" feature in the Azure AI Studio playground doesn't support private storage account
+[Please see this](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/configure-private-link?tabs=cli)
+3. cli is not available for AI resources and projects. Need to use Python SDK. Hence the dependency on python. 

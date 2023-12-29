@@ -19,7 +19,12 @@ param location string = 'westus'
 
 @description('That name is the name of our application. It has to be unique.Type a name followed by your resource group name. (<name>-<resourceGroupName>)')
 param aoaiServiceName string 
+
+
+
 param deployments array = []
+
+
 var sku = 'S0'
 
 
