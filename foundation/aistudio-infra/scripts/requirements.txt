@@ -1,0 +1,8 @@
+azure-identity 
+azure-ai-generative[faiss] 
+azure-search-documents 
+azure-ai-resources
+azure-ai-ml
+promptflow 
+promptflow-tools
+keyrings.alt
