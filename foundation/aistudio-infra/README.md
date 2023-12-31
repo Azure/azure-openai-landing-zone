@@ -10,6 +10,11 @@ Enterprise teams can deploy the Azure studio components within an Azure Virtual 
 
 ![Alt text](./assets/aistudio-vnet.png)
 
+
+Azure AI Projects supports the following components
+
+![Alt text](./assets/aiproject.png)
+
 Azure Studio AI supports two modes Virtual Network integration. 
 
 1. [Managed VNet ](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/configure-managed-network?tabs=azure-cli)
@@ -77,9 +82,11 @@ Resources deployed by the bicep file
 | Azure AI Project | Azure AI project is used to provision individual projects within the AI resource. |
 | Azure Storage Account | Azure storage account is used to store the data for the AI projects. |
 | Azure Key Vault | Azure key vault is used to store the secrets for the AI projects. |
+| Azure AI Search | Azure AI search is used as vector store for the data for the AI projects. |
 | Default Connections | Default connections to the AI Service endpoints such as Azure OpenAI, Speech etc. |
 | Private Endpoints | Private endpoints for the AI Resources |
 | Private DNS Zone | Private DNS zone group for the AI Resources |
+| Model deployment | a gpt-35-turbo model with 1K TPM is deployed. Additional models can be deployed by modifying the azure-ai.bicep template. |
 
 
 
