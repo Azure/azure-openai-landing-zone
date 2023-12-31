@@ -91,7 +91,7 @@ Follow these steps to log into your Azure account using the Azure CLI.
 3. **Deploy to Azure Resource Group using Bash**:
 
     Replace `<resource-group>` with your Azure resource group:
-    ```bash
+    ```
     git clone https://github.com/anildwarepo/azure-openai-landing-zone/
     cd azure-openai-landing-zone/foundation/aistudio-infra/scripts
     
@@ -126,7 +126,7 @@ Follow these steps to log into your Azure account using the Azure CLI.
     For a local testing without DNS forwarding, add the above DNS name and IP address to hosts file and run the below script. 
     The below scripts initiates a chatbot converations with the deployed Azure AI resource using promptflow CLI. 
 
-      ```bash
+      ```
       cd azure-openai-landing-zone/foundation/aistudio-infra/tests
       ./pftests.sh
       ```
