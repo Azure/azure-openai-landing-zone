@@ -68,6 +68,21 @@ Table below describes the bicep files in the repo
 | aistudio-infra/bicep/azure-ai-project.bicepparam | Contains the parameters for the AI Studio project components. You can modify project name etc here.  |
 | aistudio-infra/bicep/azure-ai-pe-multi.bicep | bicep module use to provision private endpoints for multiple AI resource components such as storage, key vault, AI resouces etc.  |
 
+Resources deployed by the bicep file
+
+| Resource | Description |
+|--------|-------------|
+| Azure Resource Group | Azure resource group is used to group the AI studio components. |
+| Azure AI Resource | Azure AI resource is the main resource for Azure AI studio. This resource is used to provision the AI studio components. |
+| Azure AI Project | Azure AI project is used to provision individual projects within the AI resource. |
+| Azure Storage Account | Azure storage account is used to store the data for the AI projects. |
+| Azure Key Vault | Azure key vault is used to store the secrets for the AI projects. |
+| Default Connections | Default connections to the AI Service endpoints such as Azure OpenAI, Speech etc. |
+| Private Endpoints | Private endpoints for the AI Resources |
+| Private DNS Zone | Private DNS zone group for the AI Resources |
+
+
+
 ## Deployment Steps
 
 ### Azure Login Steps
