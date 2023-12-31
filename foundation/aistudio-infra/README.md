@@ -124,7 +124,7 @@ Follow these steps to log into your Azure account using the Azure CLI.
 4. **Test Azure AI resource Endpoint**:
 
     For a local testing without DNS forwarding, add the above DNS name and IP address to hosts file and run the below script. 
-    The below scripts initiates a chatbot converations with the deployed Azure AI resource using promptflow CLI. 
+    The below scripts initiates a chatbot converation with the deployed Azure AI resource using promptflow CLI. 
 
       ```
       cd azure-openai-landing-zone/foundation/aistudio-infra/tests
