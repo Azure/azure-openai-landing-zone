@@ -112,3 +112,4 @@ resource workspaceworkingdirectory 'Microsoft.MachineLearningServices/workspaces
 */
 
 
+output azureAIResourceId  string = azureaiResource.id

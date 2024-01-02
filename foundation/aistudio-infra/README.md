@@ -4,16 +4,19 @@
 
 The diagram shows the components of Azure AI studio which can be deployed using the bicep deployments
 
-![](./assets/AIStudioComponents.png)
+<img src="./assets/AIStudioComponents.png" width="500">
 
 Enterprise teams can deploy the Azure studio components within an Azure Virtual network as shown below. 
 
-![Alt text](./assets/aistudio-vnet.png)
+
+<img src="./assets/aistudio-vnet.png" width="500">
+
 
 
 Azure AI Projects supports the following components
 
-![Alt text](./assets/aiproject.png)
+<img src="./assets/aiproject.png" width="500">
+![Alt text]()
 
 Azure Studio AI supports two modes Virtual Network integration. 
 
@@ -88,6 +91,17 @@ Resources deployed by the bicep file
 | Private DNS Zone | Private DNS zone group for the AI Resources |
 | Model deployment | a gpt-35-turbo model with 1K TPM is deployed. Additional models can be deployed by modifying the azure-ai.bicep template. |
 
+## Regional Availability
+
+<img src="./assets/modelregions.png" width="500">
+
+
+Please refer to the regional availability of the Azure AI resources:
+
+- [Azure AI Studio](https://azure.microsoft.com/en-us/global-infrastructure/services/?products=machine-learning-service)
+- [Azure Regions](https://azure.microsoft.com/en-us/explore/global-infrastructure/geographies/#geographies)
+
+- [Azure OpenAI Models and region availability](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models#model-summary-table-and-region-availability)
 
 
 ## Deployment Steps
