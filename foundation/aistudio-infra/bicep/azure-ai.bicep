@@ -53,6 +53,7 @@ param partitionCount int = 1
 param hostingMode string = 'default'
 
 @description('Specifies the location for all resources.')
+/*
 @allowed([
   'australiaeast'
   'brazilsouth'
@@ -72,9 +73,11 @@ param hostingMode string = 'default'
   'westcentralus'
   'westus'
   'westus2'
+  'westus3'
   'westeurope'
 ])
-param location string = 'westus'
+*/
+param location string = resourceGroup().location
 
 @description('Private endpoint for a Azure AI Resource.')
 param privateEndpointName string = 'ai-${uniqueString(resourceGroup().id)}-pe'
@@ -99,6 +102,8 @@ param subnetName string
 
 @description('If Private endpoint needs to be enabled')
 param peEnabled bool = true
+
+@description('Whether endpoints should be created or not. new or existing')
 param endpointOption string = 'new'
 
 
@@ -204,6 +209,7 @@ resource azureaiResource 'Microsoft.MachineLearningServices/workspaces@2023-02-0
   identity: {
     type: 'SystemAssigned'
   }
+
   properties: {
     friendlyName: azureAIResourceName
     storageAccount: storageAccount.id
@@ -245,7 +251,7 @@ resource azureaiProjectResource 'Microsoft.MachineLearningServices/workspaces@20
 */
 
 resource azureAIService 'Microsoft.CognitiveServices/accounts@2023-05-01' existing = {
-  name: '${azureAIResourceName}-aiservices'  
+  name: '${azureAIResourceName}-aiservices'
 }
 
 /*
@@ -266,7 +272,7 @@ resource modelDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-
     model: {
       format: 'OpenAI'
       name: 'gpt-35-turbo'
-      version: '1106'
+      version: '0613'
     }
     raiPolicyName: 'Microsoft.Default'
   }
