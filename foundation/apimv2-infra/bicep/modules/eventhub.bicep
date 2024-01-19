@@ -52,7 +52,7 @@ resource eventHubForAPIMDiagnosticSettings 'Microsoft.EventHub/namespaces/eventh
   }
 }
 
-resource symbolicname 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules@2022-10-01-preview' = {
+resource eventHubForAPIMAuthorizationRule 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules@2022-10-01-preview' = {
   name: 'apimLoggerAccessPolicy'
   parent: eventHubForAPIM
   properties: {
@@ -61,3 +61,5 @@ resource symbolicname 'Microsoft.EventHub/namespaces/eventhubs/authorizationRule
     ]
   }
 }
+
+output eventHubForAPIMAuthorizationRuleName string = eventHubForAPIMAuthorizationRule.name

@@ -15,7 +15,7 @@
 // https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-cloud-shell
 
 //*******************************************************************************
-// Parameters section of template
+// Parameters
 //*******************************************************************************
 
 param prefix string
@@ -23,7 +23,7 @@ param prefix string
 param location string
 
 //*******************************************************************************
-// Variables section of template
+// Variables
 //*******************************************************************************
 
 // Variables related to setting naming conventions for resources
@@ -41,7 +41,7 @@ var storageAccountName = '${prefix}st'
 var streamAnalyticsName = '${prefix}-asa'
 
 //*******************************************************************************
-// Resource section of template
+// Resources
 //*******************************************************************************
 
 // This is the root of the overall deployment. We must first create the Resource Group.
@@ -58,9 +58,16 @@ resource deployResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 module deployAPIM './modules/apim.bicep' = {
   name: 'APIM'
   scope: deployResourceGroup
+  dependsOn: [
+    deployApplicationInsights
+    deployEventHub
+  ]
   params: {
     apiManagementName: apiManagementName
     location: location
+    applicationInsightsName: applicationInsightsName
+    eventHubNamespaceName: eventHubNamespaceName
+    eventHubName: eventHubName
   }
 }
 
