@@ -1,6 +1,6 @@
-//*******************************************************************************
+//****************************************************************************************
 // Parameters
-//*******************************************************************************
+//****************************************************************************************
 
 @description('Name of the API Management instance. Must be globally unique.')
 param apiManagementName string
@@ -14,16 +14,16 @@ param eventHubNamespaceName string
 
 param eventHubName string
 
-//*******************************************************************************
+//****************************************************************************************
 // Variables
-//*******************************************************************************
+//****************************************************************************************
 
 var publisherEmail = 'admin@contoso.com'
 var publisherName = 'ContosoAdmin'
 
-//*******************************************************************************
+//****************************************************************************************
 // Existing resource references
-//*******************************************************************************
+//****************************************************************************************
 
 resource existingApplicationInsights 'microsoft.insights/components@2020-02-02' existing = {
   name: applicationInsightsName
@@ -33,9 +33,9 @@ resource existingEventHubAuthRule 'Microsoft.EventHub/namespaces/eventhubs/autho
   name: '${eventHubNamespaceName}/${eventHubName}/apimLoggerAccessPolicy'
 }
 
-//*******************************************************************************
+//****************************************************************************************
 // Resources
-//*******************************************************************************
+//****************************************************************************************
 
 resource apiManagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   name: apiManagementName
@@ -43,6 +43,9 @@ resource apiManagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   sku: {
     name: 'StandardV2'
     capacity: 1
+  }
+  identity: {
+    type: 'SystemAssigned'
   }
   properties: {
     publisherEmail: publisherEmail
@@ -88,11 +91,9 @@ resource apiManagementAPI 'Microsoft.ApiManagement/service/apis@2023-03-01-previ
   }
 }
 
-//***********************************
+//********************************************
 // Logging related resources
-//***********************************
-
-
+//********************************************
 //**********************
 // Loggers https://learn.microsoft.com/en-us/azure/api-management/api-management-howto-app-insights?tabs=bicep
 //**********************
@@ -212,7 +213,6 @@ resource serviceAzureMonitorDiagnostic 'Microsoft.ApiManagement/service/diagnost
     }
   }
 }
-
 
 resource serviceAPIAppInsightsDiagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2023-03-01-preview' = {
   parent: apiManagementAPI
@@ -343,3 +343,11 @@ resource serviceAPILocalDiagnostic 'Microsoft.ApiManagement/service/apis/diagnos
     }
   }
 }
+
+
+
+//****************************************************************************************
+// Outputs
+//****************************************************************************************
+
+output managedIdentityPrincipalID string = apiManagement.identity.principalId

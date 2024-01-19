@@ -1,6 +1,6 @@
-//*******************************************************************************
+//****************************************************************************************
 // General documentation
-//*******************************************************************************
+//****************************************************************************************
 
 // This is a Bicep template. Bicep is a Domain Specific Language (DSL) that is used to deploy Azure resources.
 // Bicep is a declarative language, meaning that you declare the desired state of the resources you want to deploy.
@@ -14,17 +14,17 @@
 // https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-powershell
 // https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-cloud-shell
 
-//*******************************************************************************
+//****************************************************************************************
 // Parameters
-//*******************************************************************************
+//****************************************************************************************
 
 param prefix string
 
 param location string
 
-//*******************************************************************************
+//****************************************************************************************
 // Variables
-//*******************************************************************************
+//****************************************************************************************
 
 // Variables related to setting naming conventions for resources
 // Below are examples of string concatenation in Bicep. Refer to: https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-functions-string#concat
@@ -40,9 +40,9 @@ var applicationInsightsName = '${prefix}-appi'
 var storageAccountName = '${prefix}st'
 var streamAnalyticsName = '${prefix}-asa'
 
-//*******************************************************************************
+//****************************************************************************************
 // Resources
-//*******************************************************************************
+//****************************************************************************************
 
 // This is the root of the overall deployment. We must first create the Resource Group.
 // Resource Groups exist directly below the Subscription level. Therefore, we must specify the scope of the deployment to be the Subscription.
@@ -132,4 +132,17 @@ module deployStreamAnalytics './modules/streamanalytics.bicep' = {
     streamAnalyticsName: streamAnalyticsName
     location: location
   }
+}
+
+module deployRoleAssignments './modules/roleAssignment.bicep' = {
+  name: 'roleAssignments'
+  scope: deployResourceGroup
+  params: {
+    APIMPrincipalId: deployAPIM.outputs.managedIdentityPrincipalID
+    keyVaultName: keyVaultName
+  }
+  dependsOn: [
+    deployAPIM
+    deployKeyVault
+  ]
 }
