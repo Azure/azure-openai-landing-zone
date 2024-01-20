@@ -4,6 +4,10 @@ param keyVaultName string
 @description('Location for the resource.')
 param location string
 
+@description('Specifies all secrets wrapped in a secure object.')
+@secure()
+param secretsObject object
+
 // You have to have the tenantID of the Azure AD instance your Key Vault lives in for deployment. 
 // The below var retrieves this information for us.
 var tenantId = subscription().tenantId
@@ -24,3 +28,11 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     publicNetworkAccess: 'Enabled'
   }
 }
+
+resource secrets 'Microsoft.KeyVault/vaults/secrets@2021-04-01-preview' = [for secret in items(secretsObject): {
+  name: secret.value.secretName
+  parent: keyVault
+  properties: {
+    value: secret.value.secretValue
+  }
+}]

@@ -22,6 +22,10 @@ param prefix string
 
 param location string
 
+@description('Specifies all secrets wrapped in a secure object.')
+@secure()
+param secretsObject object
+
 //****************************************************************************************
 // Variables
 //****************************************************************************************
@@ -58,17 +62,19 @@ resource deployResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 module deployAPIM './modules/apim.bicep' = {
   name: 'APIM'
   scope: deployResourceGroup
-  dependsOn: [
-    deployApplicationInsights
-    deployEventHub
-  ]
   params: {
     apiManagementName: apiManagementName
     location: location
     applicationInsightsName: applicationInsightsName
     eventHubNamespaceName: eventHubNamespaceName
     eventHubName: eventHubName
+    keyVaultName: keyVaultName
   }
+  dependsOn: [
+    deployApplicationInsights
+    deployEventHub
+    deployKeyVault
+  ]
 }
 
 module deployKeyVault './modules/keyvault.bicep' = {
@@ -77,6 +83,7 @@ module deployKeyVault './modules/keyvault.bicep' = {
   params: {
     keyVaultName: keyVaultName
     location: location
+    secretsObject: secretsObject
   }
 }
 
