@@ -1,18 +1,95 @@
+
+/*
+  Multiple locations are being specified as parameters in this code.
+  The reason for having multiple locations is that different resources or services may not be available in the same location.
+  
+  - `location` parameter represents the location for general resources.
+  - `locationFomsRecogniser` parameter represents the location for Form Recognizer resources.
+  - `locationStaticWebApp` parameter represents the location for Static Web App resources.
+  - `locationOpenAI` parameter represents the location for OpenAI resources.
+*/
 param location string = 'canadaeast'
 param locationFomsRecogniser string ='canadacentral'
 param locationStaticWebApp string ='westus2'
+param locationOpenAI string = 'canadaeast'
+param env string = 'dev'
+param postFix string = '-02'
 
-param addressPrefixParam string = '10.0.0.0/16'
 
-param aiSubnetAddressPrefixParam string = '10.0.0.0/24'
+/*
+  The address prefixes defined above represent the IP address ranges for different subnets in the virtual network used by each service.
 
-param azureBastionSubnetAddressPrefix string = '10.0.1.0/24'
+  Parameters:
+  - addressPrefixParam: The address prefix for the VNet.
+  - aiSubnetAddressPrefixParam: The address prefix for the AI subnet.
+  - azureBastionSubnetAddressPrefix: The address prefix for the Azure Bastion subnet.
+  - privateEndpointSubnetAddressPrefixParam: The address prefix for the private endpoint subnet.
+  - jumpboxSubnetAddressPrefixParam: The address prefix for the jumpbox subnet.
+  - appSubnetAddressPrefix: The address prefix for the application subnet.
+*/
+param vnet_name string = 'vnet-ai-standalone${postFix}'
+param addressPrefixParam string = '11.0.0.0/16'
+param aiSubnetAddressPrefixParam string = '11.0.0.0/24'
+param azureBastionSubnetAddressPrefix string = '11.0.1.0/24'
+param privateEndpointSubnetAddressPrefixParam string = '11.0.2.0/24'
+param jumpboxSubnetAddressPrefixParam string = '11.0.3.0/24'
+param appSubnetAddressPrefix string  = '11.0.4.0/24'
 
-param privateEndpointSubnetAddressPrefixParam string = '10.0.2.0/24'
 
-param jumpboxSubnetAddressPrefixParam string = '10.0.3.0/24'
+/*
+  These are  the parameters and variables for deploying OpenAI models.
+  It includes parameters for GPT deployment, search index name, chat GPT model version,
+  chat GPT deployment capacity, embedding deployment name, embedding model name, and
+  embedding deployment capacity.
 
-param  appSubnetAddressPrefix string  = '10.0.4.0/24'
+  The 'defaultOpenAiDeployments' variable is an array that contains the configurations
+  for the default OpenAI deployments. It includes the name, model format, model name,
+  model version, SKU name, and deployment capacity for each deployment.
+
+  Usage:
+  - Modify the parameter values according to your requirements.
+  - Use the 'defaultOpenAiDeployments' variable to define additional OpenAI deployments.
+*/
+  
+param gptDeploymentName string= 'gpt-4'
+param searchIndexName string= 'idx-aoai-standalone'
+param chatGptModelVersion string ='1106-Preview'
+param chatGptDeploymentCapacity int = 5
+param embeddingDeploymentName  string=  'text-embedding-ada-002'
+param embeddingModelName string =  'text-embedding-ada-002'
+param embeddingDeploymentCapacity int =5
+
+/*
+  This Bicep file contains parameters for various resources used in the standalone infrastructure deployment.
+  The parameters include search service, key vault, OpenAI, document intelligence, storage endpoint, app service plan, Azure function, and static website names.
+  These parameters can be customized to fit the specific requirements of the deployment.
+*/
+param searchServiceName string = 'ais-aoai-standalone-${env}${postFix}'
+param skuName string = 'basic'
+param privateEndpointName string = 'pv-search-oai-${env}${postFix}'
+param privateDnsZoneNameSearch string = 'privatelink.search.windows.net'
+
+param keyvaultName string = 'kv-oai-standalone-${env}${postFix}'
+param keyvaultPleName string = 'pv-kv-oai-${env}${postFix}'
+
+param privateEndpointOpenAIName string = 'pe-oai-${env}${postFix}'
+param skuOpenAI string = 'S0'
+param OpenAIName string = 'oai-standalone-${env}${postFix}'
+param privateDnsZoneNameOpenAI string = 'privatelink.openai.azure.com'
+
+
+param privateEndpointDocumentIntelligenceName string = 'pe-form-${env}${postFix}'
+param skuDocumentIntelligence string = 'S0'
+param DocumentIntelligenceName string ='frm-standalone-${env}${postFix}' 
+param privateDnsZoneNameDocumentIntelligence string = 'privatelink.cognitiveservices.azure.com'
+
+param  storageEndpointDocumentIntelligenceName string   = 'pe-storage-${env}${postFix}'   
+
+param appServicePlanName string = 'asp-03-${env}${postFix}'
+param azFunctionName string = 'afn-aoai-standalone-${env}${postFix}'
+param staticWebsiteName string = 'swa-aoai-standalone-${env}${postFix}'
+
+
 
 module vnet './core/vnet.bicep' = {
   name: 'vnetnDeployment'
@@ -24,59 +101,51 @@ module vnet './core/vnet.bicep' = {
     privateEndpointSubnetAddressPrefix: privateEndpointSubnetAddressPrefixParam
     jumpboxSubnetAddressPrefix: jumpboxSubnetAddressPrefixParam
     appSubnetAddressPrefix: appSubnetAddressPrefix
+    vnet_name: vnet_name
   }
 }
 
-module passwordGeneratorModule './core/password-generator.bicep' = {
+module passwordGeneratorModule './security/password-generator.bicep' = {
   name: 'passwordGeneratorDeployment'
   params: {
     location: location
   }
 }
 
-module bastion './core/bastion.bicep' = {
+module bastion './security/bastion.bicep' = {
   name: 'bastionDeployment'
   params: {
-    location: location // Replace 'yourLocation' with the desired location value
+    location: location 
     bastion_subnet_id: vnet.outputs.subnets[2].id
     jumpbox_subnet_id: vnet.outputs.subnets[3].id
     adminPassword: passwordGeneratorModule.outputs.generatedPassword
   }
 }
 
-module keyvault './core/keyvault.bicep' = {
+module keyvault './security/keyvault.bicep' = {
   name: 'keyVaultDeployment'
   params: {
-    keyvaultName: 'kv-oai-standalone'
-    keyvaultPleName: 'pv-kv-oai'
+    keyvaultName: keyvaultName
+    keyvaultPleName: keyvaultPleName
     subnetId: vnet.outputs.subnets[1].id
     virtualNetworkId: vnet.outputs.id
-    location: location // Replace 'yourLocation' with the desired location value
+    location: location 
   }
 }
 
 module searchServiceModule './ai/search.bicep' = {
   name: 'deploySearchServiceWithPrivateEndpoint'
   params: {
-    searchServiceName: 'as-aoai-standalone'
+    searchServiceName: searchServiceName
     location: location
-    skuName: 'basic'
+    skuName: skuName
+    privateEndpointName: privateEndpointName
+    privateDnsZoneName: privateDnsZoneNameSearch
     subnetId: vnet.outputs.subnets[1].id
-    privateEndpointName: 'pv-search-oai'
-    privateDnsZoneName: 'privatelink.search.windows.net'
     virtualNetworkId: vnet.outputs.id
   }
 }
 
-//GPT
-
-param gptDeploymentName string= 'gpt-4'
-param searchIndexName string= 'idx-aoai-standalone'
-param chatGptModelVersion string ='1106-Preview'
-param chatGptDeploymentCapacity int = 30
-param embeddingDeploymentName  string=  'text-embedding-ada-002'
-param embeddingModelName string =  'text-embedding-ada-002'
-param embeddingDeploymentCapacity int =30
 
 var defaultOpenAiDeployments = [
   {
@@ -105,21 +174,19 @@ var defaultOpenAiDeployments = [
   }
 ]
 
-
-
 module privateEndpointOpenAIModule './ai/cognitive.bicep' = {
   name: 'PrivateEndpointOpenAIDeployment'
   params: {
     location: location
-    privateEndpointcognitiveName: 'pe-oai'
+    privateEndpointcognitiveName: privateEndpointOpenAIName 
     subnet_id: vnet.outputs.subnets[1].id
     virtualNetworkId: vnet.outputs.id
-    sku: 'S0'
-    cognitiveName: 'oai-standalone'   
-    privateDnsZoneName: 'privatelink.openai.azure.com'
+    sku: skuOpenAI
+    cognitiveName: OpenAIName
+    privateDnsZoneName: privateDnsZoneNameOpenAI
     kind: 'OpenAI'
     vnet_private_endpoint_subnet_id: vnet.outputs.subnets[1].id 
-    vnetLocation:location
+    vnetLocation:locationOpenAI
     deployments: defaultOpenAiDeployments
   }
 }
@@ -128,12 +195,12 @@ module privateEndpointFormRecogModule  './ai/cognitive.bicep' = {
   name: 'PrivateEndpointFormRecogDeployment'
   params: {
     location: locationFomsRecogniser
-    privateEndpointcognitiveName: 'pe-form'    
+    privateEndpointcognitiveName: privateEndpointDocumentIntelligenceName
     virtualNetworkId: vnet.outputs.id
-    sku: 'S0'
-    cognitiveName: 'frm-standalone' 
+    sku: skuDocumentIntelligence
+    cognitiveName: DocumentIntelligenceName
     subnet_id: vnet.outputs.subnets[1].id
-    privateDnsZoneName: 'privatelink.cognitiveservices.azure.com'
+    privateDnsZoneName: privateDnsZoneNameDocumentIntelligence
     kind: 'FormRecognizer'
     vnet_private_endpoint_subnet_id: vnet.outputs.subnets[1].id 
     vnetLocation:location
@@ -143,7 +210,7 @@ module storageAccount './core/storage.bicep' = {
   name: 'storageDeployment'
   params: {
     location: location
-    privateEndpointName: 'pe-storage'   
+    privateEndpointName: storageEndpointDocumentIntelligenceName
     subnetId: vnet.outputs.subnets[1].id
     vnetId: vnet.outputs.id
     containerNames: [
@@ -154,9 +221,7 @@ module storageAccount './core/storage.bicep' = {
   }
 }
 
-param appServicePlanName string = 'appserviceplan-03'
-param azFunctionName string = 'fn-aoai-standalone-01'
-param staticWebsiteName string = 'sw-aoai-standalone-01'
+
 
 // Create an App Service Plan to group applications under the same payment plan and SKU
 module appServicePlan './host/appserviceplan.bicep' = {
@@ -186,7 +251,6 @@ module function './host/azfunctions.bicep' = {
     azureOpenaiChatgptDeployment: gptDeploymentName
     azureOpenaigptDeployment: gptDeploymentName
     azureOpenaiService:privateEndpointOpenAIModule.outputs.name
-    //azureOpenaiServiceKey: ''
     azureSearchIndex: searchIndexName
     azureSearchService: searchServiceModule.outputs.name
     //azureSearchServiceKey: ''
@@ -218,6 +282,11 @@ module mangedIdentities './security/rbac.bicep' = {
   }
 }
 
-output searchServiceIdOutput string = searchServiceModule.outputs.searchServiceId
-output privateEndpointIdOutput string = searchServiceModule.outputs.privateEndpointId
-output privateDnsZoneIdOutput string = searchServiceModule.outputs.privateDnsZoneId
+output openAIPrivateEndpointUrl string = '${OpenAIName}.${privateDnsZoneNameOpenAI}'
+output documentIntelligencePrivateEndpointUrl string = '${DocumentIntelligenceName}.${privateDnsZoneNameDocumentIntelligence}'
+output keyVaultPrivateEndpointUrl string = '${keyvaultName}.privatelink.azure.com'
+output searchPrivateEndpointUrl string = '${searchServiceName}.${privateDnsZoneNameSearch}'
+#disable-next-line no-hardcoded-env-urls
+output storagePrivateEndpointUrl string = '${storageEndpointDocumentIntelligenceName}.blob.core.windows.net'
+output functionPrivateEndpointUrl string = '${azFunctionName}.azurewebsites.net'
+output staticWebsiteUrl string = staticwebsite.outputs.url

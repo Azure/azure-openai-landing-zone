@@ -1,16 +1,16 @@
 
- param location string
- param addressPrefix string
- param aiSubnetAddressPrefix string
- param privateEndpointSubnetAddressPrefix string
- param azureBastionSubnetAddressPrefix string
- param jumpboxSubnetAddressPrefix string
- param appSubnetAddressPrefix string
-
+param location string
+param addressPrefix string
+param aiSubnetAddressPrefix string
+param privateEndpointSubnetAddressPrefix string
+param azureBastionSubnetAddressPrefix string
+param jumpboxSubnetAddressPrefix string
+param appSubnetAddressPrefix string
+param vnet_name string
 
 
 resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
-  name: 'vnet-ai-standalone'
+  name: vnet_name
   location: location
   properties: {
     addressSpace: {

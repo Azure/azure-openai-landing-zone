@@ -1,0 +1,21 @@
+{
+    "trailingSlash": "auto",
+    "routes": [
+      {
+        "route": "/*",
+        "allowedRoles": ["authenticated","registeredusers"]
+      }
+    ],
+    "responseOverrides": {
+      "401": {
+        "redirect": "/.auth/login/aad?post_login_redirect_uri=/",
+        "statusCode": 302
+      }
+    },
+    "globalHeaders": {
+      "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'"
+    },
+    "mimeTypes": {
+      ".json": "text/json"
+    }
+  }

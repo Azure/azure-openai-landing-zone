@@ -29,3 +29,4 @@ resource linkapi 'Microsoft.Web/staticSites/linkedBackends@2022-09-01' = {
   }
 }
 output name string = frontend.name
+output url string = frontend.properties.defaultHostname

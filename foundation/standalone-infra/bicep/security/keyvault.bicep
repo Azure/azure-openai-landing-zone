@@ -18,6 +18,7 @@ param subnetId string
 param virtualNetworkId string
 
 var privateDnsZoneName = 'privatelink${environment().suffixes.keyvaultDns}'
+var keyvaultVnetLinkUniqueString = uniqueString(virtualNetworkId, location, keyVault.id)
 
 resource keyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
   name: keyvaultName
@@ -60,6 +61,7 @@ resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2022-01-01'
         }
       }
     ]
+    manualPrivateLinkServiceConnections: []
     subnet: {
       id: subnetId
     }
@@ -67,33 +69,36 @@ resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2022-01-01'
 }
 
 resource keyVaultPrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: privateDnsZoneName
+  // Locations for DNS zones are always 'global' per Azure documentation
   location: 'global'
+  name: privateDnsZoneName
 }
 
-resource privateEndpointDns 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-01-01' = {
-  name: '${keyVaultPrivateEndpoint.name}/vault-PrivateDnsZoneGroup'
-  properties:{
+resource keyVaultPrivateDnsZoneVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+  // The name of the VNet link resource should be composed of the DNS zone name followed by a unique string
+  parent: keyVaultPrivateDnsZone
+  name: keyvaultVnetLinkUniqueString
+  location: 'global'
+  properties: {
+    virtualNetwork: {
+      id: virtualNetworkId
+    }
+    registrationEnabled: false
+  }
+}
+
+resource privateEndpointDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-01-01' = {
+  parent: keyVaultPrivateEndpoint
+  name: 'default' // The name 'default' is typically used for DNS zone group name for simplicity
+  properties: {
     privateDnsZoneConfigs: [
       {
-        name: privateDnsZoneName
-        properties:{
+        name: 'privatednszoneconfig1' // This can be any string, but keeping it simple as configuration1
+        properties: {
           privateDnsZoneId: keyVaultPrivateDnsZone.id
         }
       }
     ]
   }
 }
-
-resource keyVaultPrivateDnsZoneVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  name: '${keyVaultPrivateDnsZone.name}/${uniqueString(keyVault.id)}'
-  location: 'global'
-  properties: {
-    registrationEnabled: false
-    virtualNetwork: {
-      id: virtualNetworkId
-    }
-  }
-}
-
 output keyvaultId string = keyVault.id
