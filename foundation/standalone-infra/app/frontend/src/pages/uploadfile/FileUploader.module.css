@@ -1,0 +1,80 @@
+.uploadContainer {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+}
+
+.uploadTopSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.uploadBottomSection {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: flex-start;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.uploadTitle {
+  font-size: 4rem;
+  font-weight: 600;
+  margin-top: 130px;
+}
+
+@media only screen and (max-width: 800px) {
+  .oneshotTitle {
+      font-size: 3rem;
+      font-weight: 600;
+      margin-top: 0;
+  }
+}
+
+.dropzone {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 40px;
+  text-align: center;
+  margin: 0 auto;
+  max-width: 800px;
+  width: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 2rem; /* add some margin at the bottom */
+}
+
+.uploadAnswerContainer {
+  max-width: 800px;
+  width: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.dropzone.active {
+  background-color: #f7f7f7;
+}
+
+.dropzone p {
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.primaryButton {
+  width: 15%; /* set the width of the button to match the dropbox */
+  height: 5%; /* set the height of the button to match the dropbox */
+}
+
+.dropzoneContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
