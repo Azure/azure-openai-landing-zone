@@ -65,16 +65,28 @@ module deployAPIM './modules/apimService.bicep' = {
   params: {
     apiManagementName: apiManagementName
     location: location
-    applicationInsightsName: applicationInsightsName
-    eventHubNamespaceName: eventHubNamespaceName
-    eventHubName: eventHubName
-    keyVaultName: keyVaultName
   }
   dependsOn: [
     deployApplicationInsights
     deployEventHub
     deployKeyVault
   ]
+}
+
+module deployAPIMConfiguration './modules/apimServiceConfiguration.bicep' = {
+  name: 'APIMConfiguration'
+  scope: deployResourceGroup
+  dependsOn: [
+    deployAPIM
+    deployRoleAssignments
+  ]
+  params: {
+    apiManagementName: apiManagementName
+    applicationInsightsName: applicationInsightsName
+    eventHubNamespaceName: eventHubNamespaceName
+    eventHubName: eventHubName
+    keyVaultName: keyVaultName
+  }
 }
 
 module deployKeyVault './modules/keyvault.bicep' = {
