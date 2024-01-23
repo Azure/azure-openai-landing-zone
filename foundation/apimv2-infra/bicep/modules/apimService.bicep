@@ -22,6 +22,7 @@ param keyVaultName string
 
 var publisherEmail = 'admin@contoso.com'
 var publisherName = 'ContosoAdmin'
+var openAIOpenAPISpec = loadTextContent('../artifacts/openAIOpenAPI.json')
 
 //****************************************************************************************
 // Existing resource references
@@ -74,22 +75,64 @@ resource apiManagementAPI 'Microsoft.ApiManagement/service/apis@2023-03-01-previ
   name: 'azure-openai-service-api'
   properties: {
     displayName: 'Azure OpenAI Service API'
-    apiRevision: '1'
     description: 'Azure OpenAI APIs for completions and search'
+    format: 'openapi+json'
+    value: openAIOpenAPISpec
     subscriptionRequired: true
-    path: 'openai'
+    type: 'http'
     protocols: [
       'https'
     ]
-    authenticationSettings: {
-      oAuth2AuthenticationSettings: []
-      openidAuthenticationSettings: []
-    }
-    subscriptionKeyParameterNames: {
-      header: 'api-key'
-      query: 'subscription-key'
-    }
-    isCurrent: true
+    serviceUrl: apiManagement.properties.gatewayUrl
+    path: 'openai'
+  }
+}
+
+//********************************************
+// Product
+//********************************************
+
+resource apiManagementProduct 'Microsoft.ApiManagement/service/products@2023-03-01-preview' = {
+  parent: apiManagement
+  name: 'openai'
+  properties: {
+    displayName: 'OpenAI'
+    description: 'Echo for Azure OpenAI API Calls'
+    subscriptionRequired: true
+    approvalRequired: false
+    state: 'published'
+  }
+}
+
+resource apiManagementProductAPI 'Microsoft.ApiManagement/service/products/apis@2023-03-01-preview' = {
+  parent: apiManagementProduct
+  name: 'azure-openai-service-api'
+}
+
+resource apiManagementProductGroup 'Microsoft.ApiManagement/service/products/groups@2023-03-01-preview' = {
+  parent: apiManagementProduct
+  name: 'administrators'
+}
+
+resource apiManagementProductDevSubscription 'Microsoft.ApiManagement/service/subscriptions@2023-03-01-preview' = {
+  parent: apiManagement
+  name: 'aoai-dev-subscription'
+  properties: {
+    scope: apiManagementProduct.id
+    displayName: 'AOAI Development Subscription'
+    state: 'active'
+    allowTracing: false
+  }
+}
+
+resource apiManagementProductProdSubscription 'Microsoft.ApiManagement/service/subscriptions@2023-03-01-preview' = {
+  parent: apiManagement
+  name: 'aoai-prod-subscription'
+  properties: {
+    scope: apiManagementProduct.id
+    displayName: 'AOAI Production Subscription'
+    state: 'active'
+    allowTracing: false
   }
 }
 

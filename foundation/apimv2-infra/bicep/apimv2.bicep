@@ -59,7 +59,7 @@ resource deployResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   properties: {}
 }
 
-module deployAPIM './modules/apim.bicep' = {
+module deployAPIM './modules/apimService.bicep' = {
   name: 'APIM'
   scope: deployResourceGroup
   params: {
