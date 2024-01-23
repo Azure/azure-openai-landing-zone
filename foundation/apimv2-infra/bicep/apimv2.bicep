@@ -76,11 +76,6 @@ module deployAPIM './modules/apimService.bicep' = {
 module deployAPIMConfiguration './modules/apimServiceConfiguration.bicep' = {
   name: 'APIMConfiguration'
   scope: deployResourceGroup
-  dependsOn: [
-    deployAPIM
-    deployKeyVault
-    deployRoleAssignments
-  ]
   params: {
     apiManagementName: apiManagementName
     applicationInsightsName: applicationInsightsName
@@ -89,6 +84,11 @@ module deployAPIMConfiguration './modules/apimServiceConfiguration.bicep' = {
     keyVaultName: keyVaultName
     secretsObject: secretsObject
   }
+  dependsOn: [
+    deployAPIM
+    deployKeyVault
+    deployRoleAssignments
+  ]
 }
 
 module deployKeyVault './modules/keyvault.bicep' = {
@@ -109,6 +109,9 @@ module deployEventHub './modules/eventhub.bicep' = {
     eventHubName: eventHubName
     location: location
   }
+  dependsOn: [
+    deployKeyVault
+  ]
 }
 
 module deployLogAnalyticsWorkspace './modules/loganalytics.bicep' = {
@@ -118,19 +121,23 @@ module deployLogAnalyticsWorkspace './modules/loganalytics.bicep' = {
     logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
     location: location
   }
+  dependsOn: [
+    deployKeyVault
+  ]
 }
 
 module deployApplicationInsights './modules/appinsights.bicep' = {
   name: 'ApplicationInsights'
   scope: deployResourceGroup
-  dependsOn: [
-    deployLogAnalyticsWorkspace
-  ]
   params: {
     applicationInsightsName: applicationInsightsName
     location: location
     workspaceResourceId: deployLogAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
   }
+  dependsOn: [
+    deployLogAnalyticsWorkspace
+    deployKeyVault
+  ]
 }
 
 module deployStorageAccount './modules/storageaccount.bicep' = {
@@ -140,19 +147,23 @@ module deployStorageAccount './modules/storageaccount.bicep' = {
     storageAccountName: storageAccountName
     location: location
   }
+  dependsOn: [
+    deployKeyVault
+  ]
 }
 
 module deployStreamAnalytics './modules/streamanalytics.bicep' = {
   name: 'StreamAnalytics'
   scope: deployResourceGroup
-  dependsOn: [
-    deployEventHub
-    deployStorageAccount
-  ]
   params: {
     streamAnalyticsName: streamAnalyticsName
     location: location
   }
+  dependsOn: [
+    deployEventHub
+    deployStorageAccount
+    deployKeyVault
+  ]
 }
 
 module deployRoleAssignments './modules/roleAssignment.bicep' = {
