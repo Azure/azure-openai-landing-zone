@@ -109,7 +109,7 @@ resource apiManagementProductProdSubscription 'Microsoft.ApiManagement/service/s
 }
 
 //********************************************
-// namedValues Fragments
+// Named Values 
 //********************************************
 
 resource namedValuesEndpoints 'Microsoft.ApiManagement/service/namedValues@2023-03-01-preview' = [for endpoint in items(secretsObject): {
@@ -153,19 +153,6 @@ resource APIMChatCompletionEventHubLogger 'Microsoft.ApiManagement/service/polic
   ]
 }
 
-resource APIMDallE3Retry 'Microsoft.ApiManagement/service/policyfragments@2023-03-01-preview' = {
-  parent: existingApiManagement
-  name: 'DallE3Retry'
-  properties: {
-    description: 'Governs the retry policy and backendUrl resets when a 429 occurs for the dall-e-3 deployment-id'
-    value: '<!--\r\n    IMPORTANT:\r\n    - Policy fragment are included as-is whenever they are referenced.\r\n    - If using variables. Ensure they are setup before use.\r\n    - Copy and paste your code here or simply start coding\r\n\r\n    Governs the retry policy and backendUrl resets when a 429 occurs for the dall-e-3 deployment-id\r\n-->\r\n<fragment>\r\n\t<retry condition="@(context.Response.StatusCode == 429 &amp;&amp; (context.Variables.GetValueOrDefault&lt;string&gt;(&quot;aoaiModelName&quot;) == &quot;dall-e-3&quot;))" count="4" interval="20" delta="10" first-fast-retry="false">\r\n\t\t<set-variable name="urlId" value="@(context.Variables.GetValueOrDefault&lt;int&gt;(&quot;urlId&quot;) % 1 + 1)" />\r\n\t\t<choose>\r\n\t\t\t<when condition="@(context.Variables.GetValueOrDefault&lt;int&gt;(&quot;urlId&quot;) == 1)">\r\n\t\t\t\t<set-variable name="backendUrl" value="{{aoai-swedencentral-endpoint}}" />\r\n\t\t\t\t<set-header name="api-key" exists-action="override">\r\n\t\t\t\t\t<value>{{aoai-swedencentral-key}}</value>\r\n\t\t\t\t</set-header>\r\n\t\t\t</when>\r\n\t\t</choose>\r\n\t</retry>\r\n</fragment>'
-  }
-  dependsOn: [
-    namedValuesEndpoints
-    namedValuesKeys
-  ]
-}
-
 resource APIMEmbeddingsEventHubLogger 'Microsoft.ApiManagement/service/policyfragments@2023-03-01-preview' = {
   parent: existingApiManagement
   name: 'EmbeddingsEventHubLogger'
@@ -177,6 +164,19 @@ resource APIMEmbeddingsEventHubLogger 'Microsoft.ApiManagement/service/policyfra
     eventHubLogger
     namedValuesEndpoints
     namedValuesKeys  
+  ]
+}
+
+resource APIMDallE3Retry 'Microsoft.ApiManagement/service/policyfragments@2023-03-01-preview' = {
+  parent: existingApiManagement
+  name: 'DallE3Retry'
+  properties: {
+    description: 'Governs the retry policy and backendUrl resets when a 429 occurs for the dall-e-3 deployment-id'
+    value: '<!--\r\n    IMPORTANT:\r\n    - Policy fragment are included as-is whenever they are referenced.\r\n    - If using variables. Ensure they are setup before use.\r\n    - Copy and paste your code here or simply start coding\r\n\r\n    Governs the retry policy and backendUrl resets when a 429 occurs for the dall-e-3 deployment-id\r\n-->\r\n<fragment>\r\n\t<retry condition="@(context.Response.StatusCode == 429 &amp;&amp; (context.Variables.GetValueOrDefault&lt;string&gt;(&quot;aoaiModelName&quot;) == &quot;dall-e-3&quot;))" count="4" interval="20" delta="10" first-fast-retry="false">\r\n\t\t<set-variable name="urlId" value="@(context.Variables.GetValueOrDefault&lt;int&gt;(&quot;urlId&quot;) % 1 + 1)" />\r\n\t\t<choose>\r\n\t\t\t<when condition="@(context.Variables.GetValueOrDefault&lt;int&gt;(&quot;urlId&quot;) == 1)">\r\n\t\t\t\t<set-variable name="backendUrl" value="{{aoai-swedencentral-endpoint}}" />\r\n\t\t\t\t<set-header name="api-key" exists-action="override">\r\n\t\t\t\t\t<value>{{aoai-swedencentral-key}}</value>\r\n\t\t\t\t</set-header>\r\n\t\t\t</when>\r\n\t\t</choose>\r\n\t</retry>\r\n</fragment>'
+  }
+  dependsOn: [
+    namedValuesEndpoints
+    namedValuesKeys
   ]
 }
 
