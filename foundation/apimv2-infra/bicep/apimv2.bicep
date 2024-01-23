@@ -87,6 +87,7 @@ module deployAPIMConfiguration './modules/apimServiceConfiguration.bicep' = {
     eventHubNamespaceName: eventHubNamespaceName
     eventHubName: eventHubName
     keyVaultName: keyVaultName
+    secretsObject: secretsObject
   }
 }
 
