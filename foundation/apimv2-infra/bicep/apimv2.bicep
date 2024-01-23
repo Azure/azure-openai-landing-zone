@@ -1,6 +1,6 @@
-//*******************************************************************************
+//****************************************************************************************
 // General documentation
-//*******************************************************************************
+//****************************************************************************************
 
 // This is a Bicep template. Bicep is a Domain Specific Language (DSL) that is used to deploy Azure resources.
 // Bicep is a declarative language, meaning that you declare the desired state of the resources you want to deploy.
@@ -14,17 +14,21 @@
 // https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-powershell
 // https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-cloud-shell
 
-//*******************************************************************************
-// Parameters section of template
-//*******************************************************************************
+//****************************************************************************************
+// Parameters
+//****************************************************************************************
 
 param prefix string
 
 param location string
 
-//*******************************************************************************
-// Variables section of template
-//*******************************************************************************
+@description('Specifies all secrets wrapped in a secure object.')
+@secure()
+param secretsObject object
+
+//****************************************************************************************
+// Variables
+//****************************************************************************************
 
 // Variables related to setting naming conventions for resources
 // Below are examples of string concatenation in Bicep. Refer to: https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-functions-string#concat
@@ -40,9 +44,9 @@ var applicationInsightsName = '${prefix}-appi'
 var storageAccountName = '${prefix}st'
 var streamAnalyticsName = '${prefix}-asa'
 
-//*******************************************************************************
-// Resource section of template
-//*******************************************************************************
+//****************************************************************************************
+// Resources
+//****************************************************************************************
 
 // This is the root of the overall deployment. We must first create the Resource Group.
 // Resource Groups exist directly below the Subscription level. Therefore, we must specify the scope of the deployment to be the Subscription.
@@ -55,12 +59,35 @@ resource deployResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   properties: {}
 }
 
-module deployAPIM './modules/apim.bicep' = {
+module deployAPIM './modules/apimService.bicep' = {
   name: 'APIM'
   scope: deployResourceGroup
   params: {
     apiManagementName: apiManagementName
     location: location
+  }
+  dependsOn: [
+    deployApplicationInsights
+    deployEventHub
+    deployKeyVault
+  ]
+}
+
+module deployAPIMConfiguration './modules/apimServiceConfiguration.bicep' = {
+  name: 'APIMConfiguration'
+  scope: deployResourceGroup
+  dependsOn: [
+    deployAPIM
+    deployKeyVault
+    deployRoleAssignments
+  ]
+  params: {
+    apiManagementName: apiManagementName
+    applicationInsightsName: applicationInsightsName
+    eventHubNamespaceName: eventHubNamespaceName
+    eventHubName: eventHubName
+    keyVaultName: keyVaultName
+    secretsObject: secretsObject
   }
 }
 
@@ -70,6 +97,7 @@ module deployKeyVault './modules/keyvault.bicep' = {
   params: {
     keyVaultName: keyVaultName
     location: location
+    secretsObject: secretsObject
   }
 }
 
@@ -125,4 +153,17 @@ module deployStreamAnalytics './modules/streamanalytics.bicep' = {
     streamAnalyticsName: streamAnalyticsName
     location: location
   }
+}
+
+module deployRoleAssignments './modules/roleAssignment.bicep' = {
+  name: 'roleAssignments'
+  scope: deployResourceGroup
+  params: {
+    APIMPrincipalId: deployAPIM.outputs.managedIdentityPrincipalID
+    keyVaultName: keyVaultName
+  }
+  dependsOn: [
+    deployAPIM
+    deployKeyVault
+  ]
 }

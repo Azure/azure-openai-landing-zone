@@ -1,11 +1,23 @@
+//****************************************************************************************
+// Parameters
+//****************************************************************************************
+
 @description('Name of the API Management instance. Must be globally unique.')
 param apiManagementName string
 
 @description('Location for the resource.')
 param location string
 
+//****************************************************************************************
+// Variables
+//****************************************************************************************
+
 var publisherEmail = 'admin@contoso.com'
 var publisherName = 'ContosoAdmin'
+
+//****************************************************************************************
+// Resources
+//****************************************************************************************
 
 resource apiManagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   name: apiManagementName
@@ -13,6 +25,9 @@ resource apiManagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   sku: {
     name: 'StandardV2'
     capacity: 1
+  }
+  identity: {
+    type: 'SystemAssigned'
   }
   properties: {
     publisherEmail: publisherEmail
@@ -33,3 +48,9 @@ resource apiManagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
     }
   }
 }
+
+//****************************************************************************************
+// Outputs
+//****************************************************************************************
+
+output managedIdentityPrincipalID string = apiManagement.identity.principalId
