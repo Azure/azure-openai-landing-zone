@@ -162,7 +162,7 @@ resource aoai_eastus2_endpoint 'Microsoft.ApiManagement/service/namedValues@2023
   name: 'aoai-eastus2-endpoint'
   properties: {
     displayName: 'aoai-eastus2-endpoint'
-    value: 'https://aoai-eastus2.openai.azure.com/openai'
+    value: 'https://ian-aoai-eastus2.openai.azure.com/openai'
     tags: []
     secret: false
   }
@@ -186,7 +186,7 @@ resource aoai_eastus_endpoint 'Microsoft.ApiManagement/service/namedValues@2023-
   name: 'aoai-eastus-endpoint'
   properties: {
     displayName: 'aoai-eastus-endpoint'
-    value: 'https://aoai-eastus.openai.azure.com/openai'
+    value: 'https://ian-aoai-eastus.openai.azure.com/openai'
     tags: []
     secret: false
   }
@@ -210,7 +210,7 @@ resource aoai_francecentral_endpoint 'Microsoft.ApiManagement/service/namedValue
   name: 'aoai-francecentral-endpoint'
   properties: {
     displayName: 'aoai-francecentral-endpoint'
-    value: 'https://aoai-francecentral.openai.azure.com/openai'
+    value: 'https://ian-aoai-francecentral.openai.azure.com/openai'
     tags: []
     secret: false
   }
@@ -258,7 +258,7 @@ resource aoai_northcentral_endpoint 'Microsoft.ApiManagement/service/namedValues
   name: 'aoai-northcentral-endpoint'
   properties: {
     displayName: 'aoai-northcentral-endpoint'
-    value: 'https://aoai-northcentral.openai.azure.com/openai'
+    value: 'https://ian-aoai-northcentral.openai.azure.com/openai'
     tags: []
     secret: false
   }
@@ -378,7 +378,7 @@ resource aoai_uksouth_endpoint 'Microsoft.ApiManagement/service/namedValues@2023
   name: 'aoai-uksouth-endpoint'
   properties: {
     displayName: 'aoai-uksouth-endpoint'
-    value: 'https://aoai-uksouth.openai.azure.com/openai'
+    value: 'https://ian-aoai-uksouth.openai.azure.com/openai'
     tags: []
     secret: false
   }
@@ -402,7 +402,7 @@ resource aoai_westeurope_endpoint 'Microsoft.ApiManagement/service/namedValues@2
   name: 'aoai-westeurope-endpoint'
   properties: {
     displayName: 'aoai-westeurope-endpoint'
-    value: 'https://aoai-westeurope.openai.azure.com/openai'
+    value: 'https://ian-aoai-westeurope.openai.azure.com/openai'
     tags: []
     secret: false
   }

@@ -78,6 +78,7 @@ module deployAPIMConfiguration './modules/apimServiceConfiguration.bicep' = {
   scope: deployResourceGroup
   dependsOn: [
     deployAPIM
+    deployKeyVault
     deployRoleAssignments
   ]
   params: {
