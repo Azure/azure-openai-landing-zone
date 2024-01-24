@@ -146,4 +146,3 @@ cython_debug/
 npm-debug.log*
 node_modules
 static/
-foundation/apimv2-infra/bicep/apimv2.bicepparam
