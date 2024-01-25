@@ -20,6 +20,9 @@
     "postFix": {
       "value": "-02"
     },
+    "globalName": {
+      "value": "aoai-standalone"
+    },
     "vnet_name": {
       "value": "vnet-ai-standalone-02"
     },
@@ -99,7 +102,7 @@
       "value": "S0"
     },
     "DocumentIntelligenceName": {
-      "value": "frm-standalone-dev-02"
+      "value": "frm-aoai-standalone-dev-02"
     },
     "privateDnsZoneNameDocumentIntelligence": {
       "value": "privatelink.cognitiveservices.azure.com"

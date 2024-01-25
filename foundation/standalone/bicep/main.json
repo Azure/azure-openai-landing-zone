@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "17611072680095484324"
+      "templateHash": "2087934947853649226"
     }
   },
   "parameters": {
@@ -143,7 +143,7 @@
     },
     "DocumentIntelligenceName": {
       "type": "string",
-      "defaultValue": "[format('frm-standalone-{0}{1}', parameters('env'), parameters('postFix'))]"
+      "defaultValue": "[format('frm-{0}-{1}{2}', parameters('globalName'), parameters('env'), parameters('postFix'))]"
     },
     "privateDnsZoneNameDocumentIntelligence": {
       "type": "string",
