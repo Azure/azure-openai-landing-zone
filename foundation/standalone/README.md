@@ -27,6 +27,7 @@ For administrative tasks, a secure jumpbox and Azure Bastion are provisioned for
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Fazure-openai-landing-zone%2Fmain%2Ffoundation%2Fstandalone%2Fbicep%2Fmain.json)
 
+
 ## Web Components
 
 For illustration and testing purposes, this deployment includes an Azure Function and a Static Web App, both publicly accessible; however, they communicate with other resources like OpenAI and Cognitive Search over private connections established via VNet Integration.
@@ -53,6 +54,12 @@ Before proceeding with the deployment steps, ensure that you have the following 
 ### 1. Prepare the Bicep Parameter File
 
 Before deploying the infrastructure, you need to modify the deployment parameters in the  `main.bicepparam`  file to match your desired configuration. This will include setting the appropriate resource names, locations, address prefixes, etc.
+
+Make sure to customise the name for the following parameters, otherwise you might get conflicts:
+
+- global name => your own name instead of oai-standalone
+- postFix => a random postfix if needed
+- env => prod,dev,test,etc.
 
 ### 2. Infrastructure Deployment
 

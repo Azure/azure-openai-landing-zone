@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "15421959840948010795"
+      "templateHash": "17611072680095484324"
     }
   },
   "parameters": {
@@ -32,6 +32,10 @@
     "postFix": {
       "type": "string",
       "defaultValue": "-02"
+    },
+    "globalName": {
+      "type": "string",
+      "defaultValue": "oai-standalone"
     },
     "vnet_name": {
       "type": "string",
@@ -67,7 +71,7 @@
     },
     "searchIndexName": {
       "type": "string",
-      "defaultValue": "idx-aoai-standalone"
+      "defaultValue": "[format('idx-a{0}', parameters('globalName'))]"
     },
     "chatGptModelVersion": {
       "type": "string",
@@ -91,7 +95,7 @@
     },
     "searchServiceName": {
       "type": "string",
-      "defaultValue": "[format('ais-aoai-standalone-{0}{1}', parameters('env'), parameters('postFix'))]"
+      "defaultValue": "[format('ais-a{0}-{1}{2}', parameters('globalName'), parameters('env'), parameters('postFix'))]"
     },
     "skuName": {
       "type": "string",
@@ -107,7 +111,7 @@
     },
     "keyvaultName": {
       "type": "string",
-      "defaultValue": "[format('kv-oai-standalone-{0}{1}', parameters('env'), parameters('postFix'))]"
+      "defaultValue": "[format('kv-{0}-{1}{2}', parameters('globalName'), parameters('env'), parameters('postFix'))]"
     },
     "keyvaultPleName": {
       "type": "string",
@@ -123,7 +127,7 @@
     },
     "OpenAIName": {
       "type": "string",
-      "defaultValue": "[format('oai-standalone-{0}{1}', parameters('env'), parameters('postFix'))]"
+      "defaultValue": "[format('{0}-{1}{2}', parameters('globalName'), parameters('env'), parameters('postFix'))]"
     },
     "privateDnsZoneNameOpenAI": {
       "type": "string",
@@ -155,11 +159,11 @@
     },
     "azFunctionName": {
       "type": "string",
-      "defaultValue": "[format('afn-aoai-standalone-{0}{1}', parameters('env'), parameters('postFix'))]"
+      "defaultValue": "[format('afn-a{0}-{1}{2}', parameters('globalName'), parameters('env'), parameters('postFix'))]"
     },
     "staticWebsiteName": {
       "type": "string",
-      "defaultValue": "[format('swa-aoai-standalone-{0}{1}', parameters('env'), parameters('postFix'))]"
+      "defaultValue": "[format('swa-a{0}-{1}{2}', parameters('globalName'), parameters('env'), parameters('postFix'))]"
     }
   },
   "variables": {
@@ -1388,7 +1392,7 @@
           },
           "containerNames": {
             "value": [
-              "oai-standalone"
+              "[format('{0}', parameters('globalName'))]"
             ]
           },
           "tags": {
@@ -1717,7 +1721,7 @@
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploySearchServiceWithPrivateEndpoint'), '2022-09-01').outputs.name.value]"
           },
           "azureStorageContainerName": {
-            "value": "oai-standalone"
+            "value": "[format('{0}', parameters('globalName'))]"
           },
           "formRecognizerService": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'PrivateEndpointFormRecogDeployment'), '2022-09-01').outputs.name.value]"
