@@ -81,7 +81,7 @@ param privateDnsZoneNameOpenAI string = 'privatelink.openai.azure.com'
 
 param privateEndpointDocumentIntelligenceName string = 'pe-form-${env}${postFix}'
 param skuDocumentIntelligence string = 'S0'
-param DocumentIntelligenceName string ='frm-standalone-${env}${postFix}' 
+param DocumentIntelligenceName string ='frm-${globalName}-${env}${postFix}' 
 param privateDnsZoneNameDocumentIntelligence string = 'privatelink.cognitiveservices.azure.com'
 
 param  storageEndpointDocumentIntelligenceName string   = 'pe-storage-${env}${postFix}'   

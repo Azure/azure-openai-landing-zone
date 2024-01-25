@@ -57,7 +57,7 @@ Before deploying the infrastructure, you need to modify the deployment parameter
 
 Make sure to customise the name for the following parameters, otherwise you might get conflicts:
 
-- global name => your own name instead of oai-standalone
+- global name => your own name instead of oai-standalone, keep it short.
 - postFix => a random postfix if needed
 - env => prod,dev,test,etc.
 
