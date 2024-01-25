@@ -57,6 +57,10 @@ resource apiManagementAPI 'Microsoft.ApiManagement/service/apis@2023-03-01-previ
     ]
     serviceUrl: existingApiManagement.properties.gatewayUrl
     path: 'openai'
+    subscriptionKeyParameterNames: {
+      header: 'api-key'
+      query: 'subscription-key'
+    }
   }
 }
 
