@@ -1,0 +1,120 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "canadaeast"
+    },
+    "locationFomsRecogniser": {
+      "value": "canadacentral"
+    },
+    "locationStaticWebApp": {
+      "value": "westus2"
+    },
+    "locationOpenAI": {
+      "value": "canadaeast"
+    },
+    "env": {
+      "value": "dev"
+    },
+    "postFix": {
+      "value": "-02"
+    },
+    "vnet_name": {
+      "value": "vnet-ai-standalone-02"
+    },
+    "addressPrefixParam": {
+      "value": "11.0.0.0/16"
+    },
+    "aiSubnetAddressPrefixParam": {
+      "value": "11.0.0.0/24"
+    },
+    "azureBastionSubnetAddressPrefix": {
+      "value": "11.0.1.0/24"
+    },
+    "privateEndpointSubnetAddressPrefixParam": {
+      "value": "11.0.2.0/24"
+    },
+    "jumpboxSubnetAddressPrefixParam": {
+      "value": "11.0.3.0/24"
+    },
+    "appSubnetAddressPrefix": {
+      "value": "11.0.4.0/24"
+    },
+    "gptDeploymentName": {
+      "value": "gpt-4"
+    },
+    "searchIndexName": {
+      "value": "idx-aoai-standalone"
+    },
+    "chatGptModelVersion": {
+      "value": "1106-Preview"
+    },
+    "chatGptDeploymentCapacity": {
+      "value": 5
+    },
+    "embeddingDeploymentName": {
+      "value": "text-embedding-ada-002"
+    },
+    "embeddingModelName": {
+      "value": "text-embedding-ada-002"
+    },
+    "embeddingDeploymentCapacity": {
+      "value": 5
+    },
+    "searchServiceName": {
+      "value": "ais-aoai-standalone-dev-02"
+    },
+    "skuName": {
+      "value": "basic"
+    },
+    "privateEndpointName": {
+      "value": "pv-search-oai-dev-02"
+    },
+    "privateDnsZoneNameSearch": {
+      "value": "privatelink.search.windows.net"
+    },
+    "keyvaultName": {
+      "value": "kv-oai-standalone-dev-02"
+    },
+    "keyvaultPleName": {
+      "value": "pv-kv-oai-dev-02"
+    },
+    "privateEndpointOpenAIName": {
+      "value": "pe-oai-dev-02"
+    },
+    "skuOpenAI": {
+      "value": "S0"
+    },
+    "OpenAIName": {
+      "value": "oai-standalone-dev-02"
+    },
+    "privateDnsZoneNameOpenAI": {
+      "value": "privatelink.openai.azure.com"
+    },
+    "privateEndpointDocumentIntelligenceName": {
+      "value": "pe-form-dev-02"
+    },
+    "skuDocumentIntelligence": {
+      "value": "S0"
+    },
+    "DocumentIntelligenceName": {
+      "value": "frm-standalone-dev-02"
+    },
+    "privateDnsZoneNameDocumentIntelligence": {
+      "value": "privatelink.cognitiveservices.azure.com"
+    },
+    "storageEndpointDocumentIntelligenceName": {
+      "value": "pe-storage-dev-02"
+    },
+    "appServicePlanName": {
+      "value": "asp-03-dev-02"
+    },
+    "azFunctionName": {
+      "value": "afn-aoai-standalone-dev-02"
+    },
+    "staticWebsiteName": {
+      "value": "swa-aoai-standalone-dev-02"
+    }
+  }
+}
