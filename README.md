@@ -11,8 +11,8 @@ Then depending on your application scenario, follow one of the patterns below to
 &nbsp;  
 ![Gen AI Use Cases](media/gen_ai_use_cases.png)  
 &nbsp;  
-### [Set up Foundation Infrastructure](./foundation/)  
-### Set up Scenario Specific Services    
+### [1. Set up Foundation Infrastructure](./foundation/)  
+### 2. Set up Scenario Specific Services (Work in Progress)    
 - #### [Summarization](./scenarios/summarization/)  
 - #### [Retrieval Augmented Generation](./scenarios/rag/)  
 - #### [Data Driven Decisioning](./scenarios/data_driven_decisioning/)  
