@@ -51,5 +51,6 @@ For deploying with either pathway, templates can provide a starting point and re
 
 Each template is designed to address the specific advantages and tailor to the needs of the chosen pathway, while also outlining the considerations and potential trade-offs involved. Ensure you evaluate your organizational needs and the complexity of the AI solutions you aim to deploy before selecting a pathway.
 
-### **Azure OpenAI API Management**: This component enables the capability to balance traffic across multiple Azure OpenAI service endpoints and provides a robust logging mechanism. For more details on how to set up and configure this integration.[Access Azure OpenAI API Management](https://github.com/Azure/azure-openai-landing-zone/tree/main/foundation/apimv2-infra)
+### Azure OpenAI API Management
+This component enables the capability to balance traffic across multiple Azure OpenAI service endpoints and provides a robust logging mechanism. For more details on how to set up and configure this integration. [Access Azure OpenAI API Management](https://github.com/Azure/azure-openai-landing-zone/tree/main/foundation/apimv2-infra)
 
