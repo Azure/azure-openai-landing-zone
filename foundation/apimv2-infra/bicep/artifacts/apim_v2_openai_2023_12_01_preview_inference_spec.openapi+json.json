@@ -1,0 +1,1744 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "gpt-4-turbo",
+        "description": "",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "https://aoai-lz-apimv2.azure-api.net/openai/deployments/gpt-4-turbo"
+        }
+    ],
+    "paths": {
+        "/completions": {
+            "post": {
+                "summary": "Creates a completion for the provided prompt, parameters and chosen model.",
+                "operationId": "completions-create",
+                "parameters": [
+                    {
+                        "name": "api-version",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Service unavailable"
+                    }
+                }
+            }
+        },
+        "/embeddings": {
+            "post": {
+                "summary": "Get a vector representation of a given input that can be easily consumed by machine learning models and algorithms.",
+                "operationId": "embeddings-create",
+                "parameters": [
+                    {
+                        "name": "api-version",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/extensions/chat/completions": {
+            "post": {
+                "summary": "Using extensions to creates a completion for the chat messages.",
+                "operationId": "extensionschatcompletions-create",
+                "parameters": [
+                    {
+                        "name": "api-version",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Service unavailable"
+                    }
+                }
+            }
+        },
+        "/chat/completions": {
+            "post": {
+                "summary": "Creates a completion for the chat message",
+                "operationId": "chatcompletions-create",
+                "parameters": [
+                    {
+                        "name": "api-version",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Service unavailable"
+                    }
+                }
+            }
+        },
+        "/audio/transcriptions": {
+            "post": {
+                "summary": "Transcribes audio into the input language.",
+                "operationId": "transcriptions-create",
+                "parameters": [
+                    {
+                        "name": "api-version",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/audio/translations": {
+            "post": {
+                "summary": "Transcribes and translates input audio into English text.",
+                "operationId": "translations-create",
+                "parameters": [
+                    {
+                        "name": "api-version",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/images/generations": {
+            "post": {
+                "summary": "Generates a batch of images from a text caption on a given DALLE model deployment",
+                "operationId": "imagegenerations-create",
+                "parameters": [
+                    {
+                        "name": "api-version",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "400": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "errorResponse": {
+                "type": "object",
+                "properties": {
+                    "error": {}
+                }
+            },
+            "errorBase": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "error": {
+                "type": "object",
+                "allOf": [
+                    {}
+                ],
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "param": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "inner_error": {}
+                }
+            },
+            "innerError": {
+                "type": "object",
+                "properties": {
+                    "code": {},
+                    "content_filter_results": {}
+                },
+                "description": "Inner error with additional details."
+            },
+            "innerErrorCode": {
+                "enum": [
+                    "ResponsibleAIPolicyViolation"
+                ],
+                "type": "string",
+                "description": "Error codes for the inner error object.",
+                "x-ms-enum": {
+                    "name": "InnerErrorCode",
+                    "modelAsString": true,
+                    "values": [
+                        {
+                            "value": "ResponsibleAIPolicyViolation",
+                            "description": "The prompt violated one of more content filter rules."
+                        }
+                    ]
+                }
+            },
+            "contentFilterResultBase": {
+                "required": [
+                    "filtered"
+                ],
+                "type": "object",
+                "properties": {
+                    "filtered": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "contentFilterSeverityResult": {
+                "required": [
+                    "severity",
+                    "filtered"
+                ],
+                "type": "object",
+                "allOf": [
+                    {},
+                    {
+                        "properties": {
+                            "severity": {
+                                "enum": [
+                                    "safe",
+                                    "low",
+                                    "medium",
+                                    "high"
+                                ],
+                                "type": "string",
+                                "x-ms-enum": {
+                                    "name": "ContentFilterSeverity",
+                                    "modelAsString": true,
+                                    "values": [
+                                        {
+                                            "value": "safe",
+                                            "description": "General content or related content in generic or non-harmful contexts."
+                                        },
+                                        {
+                                            "value": "low",
+                                            "description": "Harmful content at a low intensity and risk level."
+                                        },
+                                        {
+                                            "value": "medium",
+                                            "description": "Harmful content at a medium intensity and risk level."
+                                        },
+                                        {
+                                            "value": "high",
+                                            "description": "Harmful content at a high intensity and risk level."
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            "contentFilterDetectedResult": {
+                "required": [
+                    "detected",
+                    "filtered"
+                ],
+                "type": "object",
+                "allOf": [
+                    {},
+                    {
+                        "properties": {
+                            "detected": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                ]
+            },
+            "contentFilterDetectedWithCitationResult": {
+                "required": [
+                    "detected",
+                    "filtered"
+                ],
+                "type": "object",
+                "allOf": [
+                    {},
+                    {
+                        "properties": {
+                            "citation": {
+                                "type": "object",
+                                "properties": {
+                                    "URL": {
+                                        "type": "string"
+                                    },
+                                    "license": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            "contentFilterIdResult": {
+                "required": [
+                    "id",
+                    "filtered"
+                ],
+                "type": "object",
+                "allOf": [
+                    {},
+                    {
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ]
+            },
+            "contentFilterResultsBase": {
+                "type": "object",
+                "properties": {
+                    "sexual": {},
+                    "violence": {},
+                    "hate": {},
+                    "self_harm": {},
+                    "profanity": {},
+                    "custom_blocklists": {
+                        "type": "array",
+                        "items": {}
+                    },
+                    "error": {}
+                },
+                "description": "Information about the content filtering results."
+            },
+            "contentFilterPromptResults": {
+                "type": "object",
+                "allOf": [
+                    {},
+                    {
+                        "properties": {
+                            "jailbreak": {}
+                        }
+                    }
+                ],
+                "description": "Information about the content filtering category (hate, sexual, violence, self_harm), if it has been detected, as well as the severity level (very_low, low, medium, high-scale that determines the intensity and risk level of harmful content) and if it has been filtered or not. Information about jailbreak content and profanity, if it has been detected, and if it has been filtered or not. And information about customer block list, if it has been filtered and its id."
+            },
+            "contentFilterChoiceResults": {
+                "type": "object",
+                "allOf": [
+                    {},
+                    {
+                        "properties": {
+                            "protected_material_text": {}
+                        }
+                    },
+                    {
+                        "properties": {
+                            "protected_material_code": {}
+                        }
+                    }
+                ],
+                "description": "Information about the content filtering category (hate, sexual, violence, self_harm), if it has been detected, as well as the severity level (very_low, low, medium, high-scale that determines the intensity and risk level of harmful content) and if it has been filtered or not. Information about third party text and profanity, if it has been detected, and if it has been filtered or not. And information about customer block list, if it has been filtered and its id."
+            },
+            "promptFilterResult": {
+                "type": "object",
+                "properties": {
+                    "prompt_index": {
+                        "type": "integer"
+                    },
+                    "content_filter_results": {}
+                },
+                "description": "Content filtering results for a single prompt in the request."
+            },
+            "promptFilterResults": {
+                "type": "array",
+                "items": {},
+                "description": "Content filtering results for zero or more prompts in the request. In a streaming request, results for different prompts may arrive at different times or in different orders."
+            },
+            "chatCompletionsRequestCommon": {
+                "type": "object",
+                "properties": {
+                    "temperature": {
+                        "maximum": 2,
+                        "minimum": 0,
+                        "type": "number",
+                        "description": "What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\nWe generally recommend altering this or `top_p` but not both.",
+                        "default": 1,
+                        "example": 1
+                    },
+                    "top_p": {
+                        "maximum": 1,
+                        "minimum": 0,
+                        "type": "number",
+                        "description": "An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.\nWe generally recommend altering this or `temperature` but not both.",
+                        "default": 1,
+                        "example": 1
+                    },
+                    "stream": {
+                        "type": "boolean",
+                        "description": "If set, partial message deltas will be sent, like in ChatGPT. Tokens will be sent as data-only server-sent events as they become available, with the stream terminated by a `data: [DONE]` message.",
+                        "default": false
+                    },
+                    "stop": {
+                        "description": "Up to 4 sequences where the API will stop generating further tokens.",
+                        "default": null
+                    },
+                    "max_tokens": {
+                        "type": "integer",
+                        "description": "The maximum number of tokens allowed for the generated answer. By default, the number of tokens the model can return will be (4096 - prompt tokens).",
+                        "default": 4096
+                    },
+                    "presence_penalty": {
+                        "maximum": 2,
+                        "minimum": -2,
+                        "type": "number",
+                        "description": "Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.",
+                        "default": 0
+                    },
+                    "frequency_penalty": {
+                        "maximum": 2,
+                        "minimum": -2,
+                        "type": "number",
+                        "description": "Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.",
+                        "default": 0
+                    },
+                    "logit_bias": {
+                        "type": "object",
+                        "description": "Modify the likelihood of specified tokens appearing in the completion. Accepts a json object that maps tokens (specified by their token ID in the tokenizer) to an associated bias value from -100 to 100. Mathematically, the bias is added to the logits generated by the model prior to sampling. The exact effect will vary per model, but values between -1 and 1 should decrease or increase likelihood of selection; values like -100 or 100 should result in a ban or exclusive selection of the relevant token."
+                    },
+                    "user": {
+                        "type": "string",
+                        "description": "A unique identifier representing your end-user, which can help Azure OpenAI to monitor and detect abuse.",
+                        "example": "user-1234"
+                    }
+                }
+            },
+            "createChatCompletionRequest": {
+                "required": [
+                    "messages"
+                ],
+                "type": "object",
+                "allOf": [
+                    {},
+                    {
+                        "properties": {
+                            "messages": {
+                                "minItems": 1,
+                                "type": "array",
+                                "items": {},
+                                "description": "A list of messages comprising the conversation so far. [Example Python code](https://github.com/openai/openai-cookbook/blob/main/examples/How_to_format_inputs_to_ChatGPT_models.ipynb)."
+                            },
+                            "n": {
+                                "maximum": 128,
+                                "minimum": 1,
+                                "type": "integer",
+                                "description": "How many chat completion choices to generate for each input message.",
+                                "default": 1,
+                                "example": 1
+                            },
+                            "seed": {
+                                "maximum": 9223372036854776000,
+                                "minimum": -9223372036854776000,
+                                "type": "integer",
+                                "description": "If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same `seed` and parameters should return the same result.Determinism is not guaranteed, and you should refer to the `system_fingerprint` response parameter to monitor changes in the backend.",
+                                "default": 0,
+                                "example": 1
+                            },
+                            "response_format": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {}
+                                },
+                                "description": "An object specifying the format that the model must output. Used to enable JSON mode."
+                            },
+                            "tools": {
+                                "minItems": 1,
+                                "type": "array",
+                                "items": {},
+                                "description": "A list of tools the model may call. Currently, only functions are supported as a tool. Use this to provide a list of functions the model may generate JSON inputs for."
+                            },
+                            "tool_choice": {},
+                            "functions": {
+                                "maxItems": 128,
+                                "minItems": 1,
+                                "type": "array",
+                                "items": {},
+                                "description": "Deprecated in favor of `tools`. A list of functions the model may generate JSON inputs for."
+                            },
+                            "function_call": {
+                                "description": "Deprecated in favor of `tool_choice`. Controls how the model responds to function calls. \"none\" means the model does not call a function, and responds to the end-user. \"auto\" means the model can pick between an end-user or calling a function.  Specifying a particular function via `{\"name\":\\ \"my_function\"}` forces the model to call that function. \"none\" is the default when no functions are present. \"auto\" is the default if functions are present."
+                            }
+                        }
+                    }
+                ]
+            },
+            "chatCompletionResponseFormat": {
+                "enum": [
+                    "text",
+                    "json_object"
+                ],
+                "type": "string",
+                "description": "Setting to `json_object` enables JSON mode. This guarantees that the message the model generates is valid JSON.",
+                "default": "text",
+                "example": "json_object",
+                "x-ms-enum": {
+                    "name": "ChatCompletionResponseFormat",
+                    "modelAsString": true,
+                    "values": [
+                        {
+                            "value": "text",
+                            "description": "Response format is a plain text string."
+                        },
+                        {
+                            "value": "json_object",
+                            "description": "Response format is a JSON object."
+                        }
+                    ]
+                }
+            },
+            "chatCompletionFunction": {
+                "required": [
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the function to be called. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64."
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "The description of what the function does."
+                    },
+                    "parameters": {}
+                }
+            },
+            "chatCompletionFunctionParameters": {
+                "type": "object",
+                "description": "The parameters the functions accepts, described as a JSON Schema object. See the [guide](/docs/guides/gpt/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format."
+            },
+            "chatCompletionRequestMessage": {
+                "required": [
+                    "role"
+                ],
+                "type": "object",
+                "properties": {
+                    "role": {}
+                }
+            },
+            "chatCompletionRequestMessageRole": {
+                "enum": [
+                    "system",
+                    "user",
+                    "assistant",
+                    "tool",
+                    "function"
+                ],
+                "type": "string",
+                "description": "The role of the messages author.",
+                "x-ms-enum": {
+                    "name": "ChatCompletionRequestMessageRole",
+                    "modelAsString": true,
+                    "values": [
+                        {
+                            "value": "system",
+                            "description": "The message author role is system."
+                        },
+                        {
+                            "value": "user",
+                            "description": "The message author role is user."
+                        },
+                        {
+                            "value": "assistant",
+                            "description": "The message author role is assistant."
+                        },
+                        {
+                            "value": "tool",
+                            "description": "The message author role is tool."
+                        },
+                        {
+                            "value": "function",
+                            "description": "Deprecated. The message author role is function."
+                        }
+                    ]
+                }
+            },
+            "chatCompletionRequestMessageSystem": {
+                "required": [
+                    "content"
+                ],
+                "allOf": [
+                    {},
+                    {
+                        "type": "object",
+                        "properties": {
+                            "content": {
+                                "type": "string",
+                                "description": "The contents of the message."
+                            }
+                        }
+                    }
+                ]
+            },
+            "chatCompletionRequestMessageUser": {
+                "required": [
+                    "content"
+                ],
+                "allOf": [
+                    {},
+                    {
+                        "type": "object",
+                        "properties": {
+                            "content": {}
+                        }
+                    }
+                ]
+            },
+            "chatCompletionRequestMessageContentPart": {
+                "required": [
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "type": {}
+                }
+            },
+            "chatCompletionRequestMessageContentPartType": {
+                "enum": [
+                    "text",
+                    "image_url"
+                ],
+                "type": "string",
+                "description": "The type of the content part.",
+                "x-ms-enum": {
+                    "name": "ChatCompletionRequestMessageContentPartType",
+                    "modelAsString": true,
+                    "values": [
+                        {
+                            "value": "text",
+                            "description": "The content part type is text."
+                        },
+                        {
+                            "value": "image_url",
+                            "description": "The content part type is image_url."
+                        }
+                    ]
+                }
+            },
+            "chatCompletionRequestMessageContentPartText": {
+                "required": [
+                    "text"
+                ],
+                "allOf": [
+                    {},
+                    {
+                        "type": "object",
+                        "properties": {
+                            "text": {
+                                "type": "string",
+                                "description": "The text content."
+                            }
+                        }
+                    }
+                ]
+            },
+            "chatCompletionRequestMessageContentPartImage": {
+                "required": [
+                    "url"
+                ],
+                "allOf": [
+                    {},
+                    {
+                        "type": "object",
+                        "properties": {
+                            "url": {
+                                "type": "string",
+                                "description": "Either a URL of the image or the base64 encoded image data.",
+                                "format": "uri"
+                            },
+                            "detail": {}
+                        }
+                    }
+                ]
+            },
+            "imageDetailLevel": {
+                "enum": [
+                    "auto",
+                    "low",
+                    "high"
+                ],
+                "type": "string",
+                "description": "Specifies the detail level of the image.",
+                "default": "auto",
+                "x-ms-enum": {
+                    "name": "ImageDetailLevel",
+                    "modelAsString": true,
+                    "values": [
+                        {
+                            "value": "auto",
+                            "description": "The image detail level is auto."
+                        },
+                        {
+                            "value": "low",
+                            "description": "The image detail level is low."
+                        },
+                        {
+                            "value": "high",
+                            "description": "The image detail level is high."
+                        }
+                    ]
+                }
+            },
+            "chatCompletionRequestMessageAssistant": {
+                "required": [
+                    "content"
+                ],
+                "allOf": [
+                    {},
+                    {
+                        "type": "object",
+                        "properties": {
+                            "content": {
+                                "type": "string",
+                                "description": "The contents of the message."
+                            },
+                            "tool_calls": {
+                                "type": "array",
+                                "items": {},
+                                "description": "The tool calls generated by the model, such as function calls."
+                            }
+                        }
+                    }
+                ]
+            },
+            "chatCompletionMessageToolCall": {
+                "required": [
+                    "id",
+                    "type",
+                    "function"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "The ID of the tool call."
+                    },
+                    "type": {},
+                    "function": {
+                        "required": [
+                            "name",
+                            "arguments"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "The name of the function to call."
+                            },
+                            "arguments": {
+                                "type": "string",
+                                "description": "The arguments to call the function with, as generated by the model in JSON format. Note that the model does not always generate valid JSON, and may hallucinate parameters not defined by your function schema. Validate the arguments in your code before calling your function."
+                            }
+                        },
+                        "description": "The function that the model called."
+                    }
+                }
+            },
+            "toolCallType": {
+                "enum": [
+                    "function"
+                ],
+                "type": "string",
+                "description": "The type of the tool call, in this case `function`.",
+                "x-ms-enum": {
+                    "name": "ToolCallType",
+                    "modelAsString": true,
+                    "values": [
+                        {
+                            "value": "function",
+                            "description": "The tool call type is function."
+                        }
+                    ]
+                }
+            },
+            "chatCompletionRequestMessageTool": {
+                "required": [
+                    "tool_call_id",
+                    "content"
+                ],
+                "allOf": [
+                    {},
+                    {
+                        "type": "object",
+                        "properties": {
+                            "tool_call_id": {
+                                "type": "string",
+                                "description": "Tool call that this message is responding to."
+                            },
+                            "content": {
+                                "type": "string",
+                                "description": "The contents of the message."
+                            }
+                        }
+                    }
+                ]
+            },
+            "chatCompletionRequestMessageFunction": {
+                "required": [
+                    "function_call_id",
+                    "content"
+                ],
+                "allOf": [
+                    {},
+                    {
+                        "type": "object",
+                        "properties": {
+                            "role": {
+                                "enum": [
+                                    "function"
+                                ],
+                                "type": "string",
+                                "description": "The role of the messages author, in this case `function`."
+                            },
+                            "name": {
+                                "type": "string",
+                                "description": "The contents of the message."
+                            },
+                            "content": {
+                                "type": "string",
+                                "description": "The contents of the message."
+                            }
+                        },
+                        "description": "Deprecated. Message that represents a function."
+                    }
+                ]
+            },
+            "createChatCompletionResponse": {
+                "required": [
+                    "id",
+                    "object",
+                    "created",
+                    "model",
+                    "choices"
+                ],
+                "type": "object",
+                "allOf": [
+                    {},
+                    {
+                        "properties": {
+                            "prompt_filter_results": {},
+                            "choices": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "allOf": [
+                                        {},
+                                        {
+                                            "properties": {
+                                                "message": {},
+                                                "content_filter_results": {}
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            "chatCompletionResponseMessage": {
+                "type": "object",
+                "properties": {
+                    "role": {},
+                    "content": {
+                        "type": "string",
+                        "description": "The contents of the message."
+                    },
+                    "tool_calls": {
+                        "type": "array",
+                        "items": {},
+                        "description": "The tool calls generated by the model, such as function calls."
+                    },
+                    "function_call": {}
+                },
+                "description": "A chat completion message generated by the model."
+            },
+            "chatCompletionResponseMessageRole": {
+                "enum": [
+                    "assistant"
+                ],
+                "type": "string",
+                "description": "The role of the author of the response message."
+            },
+            "chatCompletionToolChoiceOption": {
+                "description": "Controls which (if any) function is called by the model. `none` means the model will not call a function and instead generates a message. `auto` means the model can pick between generating a message or calling a function. Specifying a particular function via `{\"type\": \"function\", \"function\": {\"name\": \"my_function\"}}` forces the model to call that function."
+            },
+            "chatCompletionNamedToolChoice": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "enum": [
+                            "function"
+                        ],
+                        "type": "string",
+                        "description": "The type of the tool. Currently, only `function` is supported."
+                    },
+                    "function": {
+                        "required": [
+                            "name"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "The name of the function to call."
+                            }
+                        }
+                    }
+                },
+                "description": "Specifies a tool the model should use. Use to force the model to call a specific function."
+            },
+            "chatCompletionFunctionCall": {
+                "required": [
+                    "name",
+                    "arguments"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the function to call."
+                    },
+                    "arguments": {
+                        "type": "string",
+                        "description": "The arguments to call the function with, as generated by the model in JSON format. Note that the model does not always generate valid JSON, and may hallucinate parameters not defined by your function schema. Validate the arguments in your code before calling your function."
+                    }
+                },
+                "description": "Deprecated and replaced by `tool_calls`. The name and arguments of a function that should be called, as generated by the model."
+            },
+            "extensionsChatCompletionsRequest": {
+                "required": [
+                    "messages"
+                ],
+                "type": "object",
+                "allOf": [
+                    {},
+                    {
+                        "properties": {
+                            "messages": {
+                                "type": "array",
+                                "items": {}
+                            },
+                            "dataSources": {
+                                "type": "array",
+                                "items": {},
+                                "description": "The data sources to be used for the Azure OpenAI on your data feature."
+                            },
+                            "enhancements": {
+                                "type": "object",
+                                "properties": {
+                                    "grounding": {
+                                        "type": "object",
+                                        "properties": {
+                                            "enabled": {
+                                                "type": "boolean",
+                                                "default": false
+                                            }
+                                        },
+                                        "description": "Request object to specify if grounding enhancement is needed."
+                                    },
+                                    "ocr": {
+                                        "type": "object",
+                                        "properties": {
+                                            "enabled": {
+                                                "type": "boolean",
+                                                "default": false
+                                            }
+                                        },
+                                        "description": "Request object to specify if ocr enhancement is needed."
+                                    }
+                                },
+                                "description": "The type of enhancements needed."
+                            }
+                        }
+                    }
+                ],
+                "description": "Request for the chat completions using extensions",
+                "example": {
+                    "dataSources": [
+                        {
+                            "type": "AzureCognitiveSearch",
+                            "parameters": {
+                                "endpoint": "https://mysearchexample.search.windows.net",
+                                "key": "***(admin key)",
+                                "indexName": "my-chunk-index",
+                                "fieldsMapping": {
+                                    "titleField": "productName",
+                                    "urlField": "productUrl",
+                                    "filepathField": "productFilePath",
+                                    "contentFields": [
+                                        "productDescription"
+                                    ],
+                                    "contentFieldsSeparator": "\n"
+                                },
+                                "topNDocuments": 5,
+                                "queryType": "semantic",
+                                "semanticConfiguration": "defaultConfiguration",
+                                "inScope": true,
+                                "roleInformation": "roleInformation"
+                            }
+                        }
+                    ],
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "Where can I find a hiking place in Seattle?"
+                        }
+                    ],
+                    "temperature": 0.9
+                }
+            },
+            "dataSource": {
+                "required": [
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "description": "The data source type."
+                    },
+                    "parameters": {
+                        "type": "object",
+                        "description": "The parameters to be used for the data source in runtime."
+                    }
+                },
+                "description": "The data source to be used for the Azure OpenAI on your data feature."
+            },
+            "message": {
+                "required": [
+                    "role",
+                    "content"
+                ],
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "integer",
+                        "description": "The index of the message in the conversation."
+                    },
+                    "role": {
+                        "enum": [
+                            "system",
+                            "user",
+                            "assistant",
+                            "tool"
+                        ],
+                        "type": "string",
+                        "description": "The role of the author of this message."
+                    },
+                    "recipient": {
+                        "type": "string",
+                        "description": "The recipient of the message in the format of <namespace>.<operation>. Present if and only if the recipient is tool.",
+                        "example": "Contoso.productsUsingGET"
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "The contents of the message"
+                    },
+                    "end_turn": {
+                        "type": "boolean",
+                        "description": "Whether the message ends the turn."
+                    },
+                    "context": {
+                        "type": "object",
+                        "properties": {
+                            "messages": {
+                                "minItems": 1,
+                                "type": "array",
+                                "items": {},
+                                "description": "Messages exchanged between model and extensions prior to final message from model"
+                            }
+                        },
+                        "description": "The conversation context"
+                    }
+                },
+                "description": "A chat message."
+            },
+            "chatCompletionsResponseCommon": {
+                "required": [
+                    "id",
+                    "object",
+                    "created",
+                    "model"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "A unique identifier for the chat completion."
+                    },
+                    "object": {},
+                    "created": {
+                        "type": "integer",
+                        "description": "The Unix timestamp (in seconds) of when the chat completion was created.",
+                        "format": "unixtime"
+                    },
+                    "model": {
+                        "type": "string",
+                        "description": "The model used for the chat completion."
+                    },
+                    "usage": {},
+                    "system_fingerprint": {
+                        "type": "string",
+                        "description": "Can be used in conjunction with the `seed` request parameter to understand when backend changes have been made that might impact determinism."
+                    }
+                }
+            },
+            "chatCompletionResponseObject": {
+                "enum": [
+                    "chat.completion"
+                ],
+                "type": "string",
+                "description": "The object type.",
+                "x-ms-enum": {
+                    "name": "ChatCompletionResponseObject",
+                    "modelAsString": true,
+                    "values": [
+                        {
+                            "value": "chat.completion",
+                            "description": "The object type is chat completion."
+                        }
+                    ]
+                }
+            },
+            "completionUsage": {
+                "required": [
+                    "prompt_tokens",
+                    "completion_tokens",
+                    "total_tokens"
+                ],
+                "type": "object",
+                "properties": {
+                    "prompt_tokens": {
+                        "type": "integer",
+                        "description": "Number of tokens in the prompt."
+                    },
+                    "completion_tokens": {
+                        "type": "integer",
+                        "description": "Number of tokens in the generated completion."
+                    },
+                    "total_tokens": {
+                        "type": "integer",
+                        "description": "Total number of tokens used in the request (prompt + completion)."
+                    }
+                },
+                "description": "Usage statistics for the completion request."
+            },
+            "chatCompletionTool": {
+                "required": [
+                    "type",
+                    "function"
+                ],
+                "type": "object",
+                "properties": {
+                    "type": {},
+                    "function": {
+                        "required": [
+                            "name",
+                            "parameters"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "description": {
+                                "type": "string",
+                                "description": "A description of what the function does, used by the model to choose when and how to call the function."
+                            },
+                            "name": {
+                                "type": "string",
+                                "description": "The name of the function to be called. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64."
+                            },
+                            "parameters": {}
+                        }
+                    }
+                }
+            },
+            "chatCompletionToolType": {
+                "enum": [
+                    "function"
+                ],
+                "type": "string",
+                "description": "The type of the tool. Currently, only `function` is supported.",
+                "x-ms-enum": {
+                    "name": "ChatCompletionToolType",
+                    "modelAsString": true,
+                    "values": [
+                        {
+                            "value": "function",
+                            "description": "The tool type is function."
+                        }
+                    ]
+                }
+            },
+            "chatCompletionChoiceCommon": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "integer"
+                    },
+                    "finish_reason": {
+                        "type": "string"
+                    }
+                }
+            },
+            "extensionsChatCompletionChoice": {
+                "type": "object",
+                "allOf": [
+                    {},
+                    {
+                        "properties": {
+                            "message": {},
+                            "enhancements": {}
+                        }
+                    }
+                ]
+            },
+            "extensionsChatCompletionsResponse": {
+                "type": "object",
+                "allOf": [
+                    {},
+                    {
+                        "properties": {
+                            "choices": {
+                                "type": "array",
+                                "items": {}
+                            }
+                        }
+                    }
+                ],
+                "description": "The response of the extensions chat completions.",
+                "example": {
+                    "id": "1",
+                    "object": "extensions.chat.completion",
+                    "created": 1679201802,
+                    "model": "gpt-3.5-turbo-0301",
+                    "choices": [
+                        {
+                            "index": 0,
+                            "finish_reason": "stop",
+                            "message": {
+                                "role": "assistant",
+                                "content": "Seattle is a great place for hiking! Here are some of the best hiking places in Seattle according to Contoso Traveler [doc1] and West Coast Traveler, Snow Lake, Mount Si, and Mount Tenerife [doc2]. I hope this helps! Let me know if you need more information.",
+                                "end_turn": true,
+                                "context": {
+                                    "messages": [
+                                        {
+                                            "role": "tool",
+                                            "content": "{\"citations\":[{\"filepath\":\"ContosoTraveler.pdf\",\"content\":\"This is the content of the citation 1\"},{\"filepath\":\"WestCoastTraveler.html\",\"content\":\"This is the content of the citation 2\"},{\"content\":\"This is the content of the citation 3 without filepath\"}],\"intent\":\"hiking place in seattle\"}",
+                                            "end_turn": false
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "createTranslationRequest": {
+                "required": [
+                    "file"
+                ],
+                "type": "object",
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "description": "The audio file to translate.",
+                        "format": "binary"
+                    },
+                    "prompt": {
+                        "type": "string",
+                        "description": "An optional text to guide the model's style or continue a previous audio segment. The prompt should be in English."
+                    },
+                    "response_format": {},
+                    "temperature": {
+                        "type": "number",
+                        "description": "The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use log probability to automatically increase the temperature until certain thresholds are hit.",
+                        "default": 0
+                    }
+                },
+                "description": "Translation request."
+            },
+            "audioResponse": {
+                "required": [
+                    "text"
+                ],
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "Translated or transcribed text."
+                    }
+                },
+                "description": "Translation or transcription response when response_format was json"
+            },
+            "audioVerboseResponse": {
+                "required": [
+                    "text"
+                ],
+                "type": "object",
+                "allOf": [
+                    {},
+                    {
+                        "properties": {
+                            "task": {
+                                "enum": [
+                                    "transcribe",
+                                    "translate"
+                                ],
+                                "type": "string",
+                                "description": "Type of audio task.",
+                                "x-ms-enum": {
+                                    "modelAsString": true
+                                }
+                            },
+                            "language": {
+                                "type": "string",
+                                "description": "Language."
+                            },
+                            "duration": {
+                                "type": "number",
+                                "description": "Duration."
+                            },
+                            "segments": {
+                                "type": "array",
+                                "items": {}
+                            }
+                        }
+                    }
+                ],
+                "description": "Translation or transcription response when response_format was verbose_json"
+            },
+            "audioResponseFormat": {
+                "title": "AudioResponseFormat",
+                "enum": [
+                    "json",
+                    "text",
+                    "srt",
+                    "verbose_json",
+                    "vtt"
+                ],
+                "type": "string",
+                "description": "Defines the format of the output.",
+                "x-ms-enum": {
+                    "modelAsString": true
+                }
+            },
+            "createTranscriptionRequest": {
+                "required": [
+                    "file"
+                ],
+                "type": "object",
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "description": "The audio file object to transcribe.",
+                        "format": "binary"
+                    },
+                    "prompt": {
+                        "type": "string",
+                        "description": "An optional text to guide the model's style or continue a previous audio segment. The prompt should match the audio language."
+                    },
+                    "response_format": {},
+                    "temperature": {
+                        "type": "number",
+                        "description": "The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use log probability to automatically increase the temperature until certain thresholds are hit.",
+                        "default": 0
+                    },
+                    "language": {
+                        "type": "string",
+                        "description": "The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency."
+                    }
+                },
+                "description": "Transcription request."
+            },
+            "audioSegment": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "Segment identifier."
+                    },
+                    "seek": {
+                        "type": "number",
+                        "description": "Offset of the segment."
+                    },
+                    "start": {
+                        "type": "number",
+                        "description": "Segment start offset."
+                    },
+                    "end": {
+                        "type": "number",
+                        "description": "Segment end offset."
+                    },
+                    "text": {
+                        "type": "string",
+                        "description": "Segment text."
+                    },
+                    "tokens": {
+                        "type": "array",
+                        "items": {
+                            "type": "number"
+                        },
+                        "description": "Tokens of the text."
+                    },
+                    "temperature": {
+                        "type": "number",
+                        "description": "Temperature."
+                    },
+                    "avg_logprob": {
+                        "type": "number",
+                        "description": "Average log probability."
+                    },
+                    "compression_ratio": {
+                        "type": "number",
+                        "description": "Compression ratio."
+                    },
+                    "no_speech_prob": {
+                        "type": "number",
+                        "description": "Probability of 'no speech'."
+                    }
+                },
+                "description": "Transcription or translation segment."
+            },
+            "imageQuality": {
+                "enum": [
+                    "standard",
+                    "hd"
+                ],
+                "type": "string",
+                "description": "The quality of the image that will be generated.",
+                "default": "standard",
+                "x-ms-enum": {
+                    "name": "Quality",
+                    "modelAsString": true,
+                    "values": [
+                        {
+                            "value": "standard",
+                            "description": "Standard quality creates images with standard quality.",
+                            "name": "Standard"
+                        },
+                        {
+                            "value": "hd",
+                            "description": "HD quality creates images with finer details and greater consistency across the image.",
+                            "name": "HD"
+                        }
+                    ]
+                }
+            },
+            "imagesResponseFormat": {
+                "enum": [
+                    "url",
+                    "b64_json"
+                ],
+                "type": "string",
+                "description": "The format in which the generated images are returned.",
+                "default": "url",
+                "x-ms-enum": {
+                    "name": "ImagesResponseFormat",
+                    "modelAsString": true,
+                    "values": [
+                        {
+                            "value": "url",
+                            "description": "The URL that provides temporary access to download the generated images.",
+                            "name": "Url"
+                        },
+                        {
+                            "value": "b64_json",
+                            "description": "The generated images are returned as base64 encoded string.",
+                            "name": "Base64Json"
+                        }
+                    ]
+                }
+            },
+            "imageSize": {
+                "enum": [
+                    "1792x1024",
+                    "1024x1792",
+                    "1024x1024"
+                ],
+                "type": "string",
+                "description": "The size of the generated images.",
+                "default": "1024x1024",
+                "x-ms-enum": {
+                    "name": "Size",
+                    "modelAsString": true,
+                    "values": [
+                        {
+                            "value": "1792x1024",
+                            "description": "The desired size of the generated image is 1792x1024 pixels.",
+                            "name": "Size1792x1024"
+                        },
+                        {
+                            "value": "1024x1792",
+                            "description": "The desired size of the generated image is 1024x1792 pixels.",
+                            "name": "Size1024x1792"
+                        },
+                        {
+                            "value": "1024x1024",
+                            "description": "The desired size of the generated image is 1024x1024 pixels.",
+                            "name": "Size1024x1024"
+                        }
+                    ]
+                }
+            },
+            "imageStyle": {
+                "enum": [
+                    "vivid",
+                    "natural"
+                ],
+                "type": "string",
+                "description": "The style of the generated images.",
+                "default": "vivid",
+                "x-ms-enum": {
+                    "name": "Style",
+                    "modelAsString": true,
+                    "values": [
+                        {
+                            "value": "vivid",
+                            "description": "Vivid creates images that are hyper-realistic and dramatic.",
+                            "name": "Vivid"
+                        },
+                        {
+                            "value": "natural",
+                            "description": "Natural creates images that are more natural and less hyper-realistic.",
+                            "name": "Natural"
+                        }
+                    ]
+                }
+            },
+            "imageGenerationsRequest": {
+                "required": [
+                    "prompt"
+                ],
+                "type": "object",
+                "properties": {
+                    "prompt": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "A text description of the desired image(s). The maximum length is 4000 characters.",
+                        "format": "string",
+                        "example": "a corgi in a field"
+                    },
+                    "n": {
+                        "maximum": 1,
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "The number of images to generate.",
+                        "default": 1
+                    },
+                    "size": {},
+                    "response_format": {},
+                    "user": {
+                        "type": "string",
+                        "description": "A unique identifier representing your end-user, which can help to monitor and detect abuse.",
+                        "format": "string",
+                        "example": "user123456"
+                    },
+                    "quality": {},
+                    "style": {}
+                }
+            },
+            "generateImagesResponse": {
+                "required": [
+                    "created"
+                ],
+                "type": "object",
+                "properties": {
+                    "created": {
+                        "type": "integer",
+                        "description": "The unix timestamp when the operation was created.",
+                        "format": "unixtime",
+                        "example": "1676540381"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {},
+                        "description": "The result data of the operation, if successful"
+                    },
+                    "error": {}
+                }
+            },
+            "imageResult": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "description": "The image url.",
+                        "example": "https://www.contoso.com"
+                    },
+                    "b64_json": {
+                        "type": "string",
+                        "description": "The base64 encoded image"
+                    },
+                    "revised_prompt": {
+                        "type": "string",
+                        "description": "The prompt that was used to generate the image, if there was any revision to the prompt."
+                    }
+                },
+                "description": "The image url or encoded image if successful, and an error otherwise."
+            },
+            "enhancement": {
+                "type": "object",
+                "properties": {
+                    "grounding": {
+                        "required": [
+                            "lines"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "lines": {
+                                "type": "array",
+                                "items": {}
+                            }
+                        },
+                        "description": "The grounding enhancement that returns the bounding box of the objects detected in the image."
+                    }
+                }
+            },
+            "line": {
+                "required": [
+                    "text",
+                    "spans"
+                ],
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string"
+                    },
+                    "spans": {
+                        "type": "array",
+                        "items": {},
+                        "description": "An array of spans that represent detected objects and its bounding box information."
+                    }
+                },
+                "description": "A content line object consisting of an adjacent sequence of content elements, such as words and selection marks."
+            },
+            "span": {
+                "required": [
+                    "text",
+                    "offset",
+                    "length",
+                    "polygon"
+                ],
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "The text content of the span that represents the detected object."
+                    },
+                    "offset": {
+                        "type": "integer",
+                        "description": "The character offset within the text where the span begins. This offset is defined as the position of the first character of the span, counting from the start of the text as Unicode codepoints."
+                    },
+                    "length": {
+                        "type": "integer",
+                        "description": "The length of the span in characters, measured in Unicode codepoints."
+                    },
+                    "polygon": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "x": {
+                                    "type": "number",
+                                    "description": "The x-coordinate of the point."
+                                },
+                                "y": {
+                                    "type": "number",
+                                    "description": "The y-coordinate of the point."
+                                }
+                            }
+                        },
+                        "description": "An array of objects representing points in the polygon that encloses the detected object."
+                    }
+                },
+                "description": "A span object that represents a detected object and its bounding box information."
+            }
+        },
+        "securitySchemes": {
+            "apiKeyHeader": {
+                "type": "apiKey",
+                "name": "api-key",
+                "in": "header"
+            },
+            "apiKeyQuery": {
+                "type": "apiKey",
+                "name": "subscription-key",
+                "in": "query"
+            }
+        }
+    },
+    "security": [
+        {
+            "apiKeyHeader": []
+        },
+        {
+            "apiKeyQuery": []
+        }
+    ]
+}
