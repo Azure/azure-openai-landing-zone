@@ -1,0 +1,46 @@
+<policies>
+    <inbound>
+        <base />
+        <set-variable name="deploymentId" value="/deployments/dall-e-3" />
+        <set-variable name="urlId" value="@(new Random(context.RequestId.GetHashCode()).Next(1, 2))" />
+        <choose>
+            <when condition="@(context.Variables.GetValueOrDefault<int>("urlId") == 1)">
+                <set-variable name="backendUrl" value="{{aoai-swedencentral-endpoint}}" />
+                <set-header name="api-key" exists-action="override">
+                    <value>{{aoai-swedencentral-key}}</value>
+                </set-header>
+            </when>
+        </choose>
+        <cache-lookup vary-by-developer="false" vary-by-developer-groups="false" downstream-caching-type="none">
+            <vary-by-header>Accept</vary-by-header>
+            <vary-by-header>Accept-Charset</vary-by-header>
+            <vary-by-header>Authorization</vary-by-header>
+        </cache-lookup>
+        <set-backend-service base-url="@((string)context.Variables["backendUrl"] + (string)context.Variables["deploymentId"])" />
+    </inbound>
+    <backend>
+        <retry condition="@(context.Response.StatusCode == 429)" count="4" interval="20" delta="10" first-fast-retry="false">
+            <set-variable name="urlId" value="@(context.Variables.GetValueOrDefault<int>("urlId") % 1 + 1)" />
+            <choose>
+                <when condition="@(context.Response != null && (context.Response.StatusCode == 429) && context.Variables.GetValueOrDefault<int>("urlId") == 1)">
+                    <set-variable name="backendUrl" value="{{aoai-swedencentral-endpoint}}" />
+                    <set-header name="api-key" exists-action="override">
+                        <value>{{aoai-swedencentral-key}}</value>
+                    </set-header>
+                </when>
+            </choose>
+            <set-backend-service base-url="@((string)context.Variables["backendUrl"] + (string)context.Variables["deploymentId"])" />
+            <forward-request buffer-request-body="true" />
+        </retry>
+    </backend>
+    <outbound>
+        <set-header name="Backend-Service-URL" exists-action="override">
+            <value>@((string)context.Variables["backendUrl"])</value>
+        </set-header>
+        <cache-store duration="20" />
+        <base />
+    </outbound>
+    <on-error>
+        <base />
+    </on-error>
+</policies>
