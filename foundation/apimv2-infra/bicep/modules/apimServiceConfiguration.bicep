@@ -72,6 +72,11 @@ resource apiManagementAPI 'Microsoft.ApiManagement/service/apis@2023-03-01-previ
 
 resource apiManagementAPIPolicy 'Microsoft.ApiManagement/service/apis/policies@2023-03-01-preview' = [for API in items(APIPolicies): {
   name: '${apiManagementName}/${API.value.name}/policy'
+  dependsOn: [
+    apiManagementAPI
+    namedValuesEndpoints
+    namedValuesKeys
+  ]
   properties: {
     value: API.value.policyPath
     format: 'rawxml'
@@ -85,6 +90,7 @@ resource apiManagementAPIPolicy 'Microsoft.ApiManagement/service/apis/policies@2
 resource apiManagementProduct 'Microsoft.ApiManagement/service/products@2023-03-01-preview' = {
   parent: existingApiManagement
   name: 'openai'
+  dependsOn: [apiManagementAPI]
   properties: {
     displayName: 'OpenAI'
     description: 'Echo for Azure OpenAI API Calls'
@@ -277,6 +283,7 @@ resource serviceAzureMonitorDiagnostic 'Microsoft.ApiManagement/service/diagnost
 
 resource serviceAPIAppInsightsDiagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2023-03-01-preview' = [for API in items(APIPolicies):{
   name: '${apiManagementName}/${API.value.name}/applicationinsights'
+  dependsOn: [apiManagementAPI]
   properties: {
     alwaysLog: 'allErrors'
     httpCorrelationProtocol: 'Legacy'
@@ -321,6 +328,7 @@ resource serviceAPIAppInsightsDiagnostic 'Microsoft.ApiManagement/service/apis/d
 
 resource serviceAPIAzureMonitorDiagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2023-03-01-preview' = [for API in items(APIPolicies):{
   name: '${apiManagementName}/${API.value.name}/azuremonitor'
+  dependsOn: [apiManagementAPI]
   properties: {
     alwaysLog: 'allErrors'
     verbosity: 'verbose'
