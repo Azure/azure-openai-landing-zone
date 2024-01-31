@@ -14,5 +14,6 @@ resource userRoleID 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   properties: {
     roleDefinitionId: resourceId('Microsoft.Authorization/roleAssignments', '4633458b-17de-408a-b874-0445c86b69e6')
     principalId: APIMPrincipalId
+    principalType: 'ServicePrincipal'
   }
 }

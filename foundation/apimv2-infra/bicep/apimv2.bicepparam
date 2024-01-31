@@ -1,6 +1,6 @@
 using './apimv2.bicep'
 
-param prefix = 'examplePrefix'
+param prefix = 'exampleprefix'
 
 param location = 'eastus'
 
@@ -115,5 +115,56 @@ param secretsObject = {
     endpointURL: 'https://westus.openai.azure.com/openai'
     endpointName: 'aoai-westus-endpoint'
     region: 'westus'
+  }
+}
+
+param APIPolicies = {
+  dall_e_3: {
+    name: 'dall-e-3'
+    policyPath: loadTextContent('../bicep/artifacts/dall-e-3-fullpolicy.xml')
+  }
+  gpt_4_32k: {
+    name: 'gpt-4-32k'
+    policyPath: loadTextContent('../bicep/artifacts/gpt-4-32k-fullpolicy.xml')
+  }
+  gpt_4: {
+    name: 'gpt-4'
+    policyPath: loadTextContent('../bicep/artifacts/gpt-4-fullpolicy.xml')
+  }
+  gpt_4_turbo: {
+    name: 'gpt-4-turbo'
+    policyPath: loadTextContent('../bicep/artifacts/gpt-4-turbo-fullpolicy.xml')
+  }
+  gpt_4v: {
+    name: 'gpt-4v'
+    policyPath: loadTextContent('../bicep/artifacts/gpt-4v-fullpolicy.xml')
+  }
+  gpt_35_turbo_16k: {
+    name: 'gpt-35-turbo-16k'
+    policyPath: loadTextContent('../bicep/artifacts/gpt-35-turbo-16k-fullpolicy.xml')
+  }
+  gpt_35_turbo_0301: {
+    name: 'gpt-35-turbo-0301'
+    policyPath: loadTextContent('../bicep/artifacts/gpt-35-turbo-0301-fullpolicy.xml')
+  }
+  gpt_35_turbo_0613: {
+    name: 'gpt-35-turbo-0613'
+    policyPath: loadTextContent('../bicep/artifacts/gpt-35-turbo-0613-fullpolicy.xml')
+  }
+  gpt_35_turbo_1106: {
+    name: 'gpt-35-turbo-1106'
+    policyPath: loadTextContent('../bicep/artifacts/gpt-35-turbo-1106-fullpolicy.xml')
+  }
+  gpt_35_turbo: {
+    name: 'gpt-35-turbo'
+    policyPath: loadTextContent('../bicep/artifacts/gpt-35-turbo-instruct-fullpolicy.xml')
+  }
+  text_embedding_ada_002: {
+    name: 'text-embedding-ada-002'
+    policyPath: loadTextContent('../bicep/artifacts/text-embedding-ada-002-fullpolicy.xml')
+  }
+  whisper: {
+    name: 'whisper'
+    policyPath: loadTextContent('../bicep/artifacts/whisper-fullpolicy.xml')
   }
 }

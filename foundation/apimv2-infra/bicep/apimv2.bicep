@@ -26,6 +26,8 @@ param location string
 @secure()
 param secretsObject object
 
+param APIPolicies object
+
 //****************************************************************************************
 // Variables
 //****************************************************************************************
@@ -66,11 +68,6 @@ module deployAPIM './modules/apimService.bicep' = {
     apiManagementName: apiManagementName
     location: location
   }
-  dependsOn: [
-    deployApplicationInsights
-    deployEventHub
-    deployKeyVault
-  ]
 }
 
 module deployAPIMConfiguration './modules/apimServiceConfiguration.bicep' = {
@@ -83,11 +80,14 @@ module deployAPIMConfiguration './modules/apimServiceConfiguration.bicep' = {
     eventHubName: eventHubName
     keyVaultName: keyVaultName
     secretsObject: secretsObject
+    APIPolicies: APIPolicies
   }
   dependsOn: [
     deployAPIM
     deployKeyVault
     deployRoleAssignments
+    deployApplicationInsights
+    deployEventHub
   ]
 }
 
@@ -110,7 +110,7 @@ module deployEventHub './modules/eventhub.bicep' = {
     location: location
   }
   dependsOn: [
-    deployKeyVault
+    deployRoleAssignments
   ]
 }
 
@@ -122,7 +122,7 @@ module deployLogAnalyticsWorkspace './modules/loganalytics.bicep' = {
     location: location
   }
   dependsOn: [
-    deployKeyVault
+    deployRoleAssignments
   ]
 }
 
@@ -136,7 +136,7 @@ module deployApplicationInsights './modules/appinsights.bicep' = {
   }
   dependsOn: [
     deployLogAnalyticsWorkspace
-    deployKeyVault
+    deployRoleAssignments
   ]
 }
 
@@ -148,7 +148,7 @@ module deployStorageAccount './modules/storageaccount.bicep' = {
     location: location
   }
   dependsOn: [
-    deployKeyVault
+    deployRoleAssignments
   ]
 }
 
@@ -160,9 +160,7 @@ module deployStreamAnalytics './modules/streamanalytics.bicep' = {
     location: location
   }
   dependsOn: [
-    deployEventHub
-    deployStorageAccount
-    deployKeyVault
+    deployRoleAssignments
   ]
 }
 
