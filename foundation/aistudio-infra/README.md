@@ -167,7 +167,7 @@ Follow these steps to log into your Azure account using the Azure CLI.
      
     ```
     Please provide resource group name:
-    test1
+    <existing resource group name that contains the AI resource>
     Please provide location. For e.g westus, eastus2, northcentralus:
     westus
     Create new AI Resource? (y/n):
