@@ -1,4 +1,4 @@
-## Azure Open AI Landing Zone Solution Accelerator  
+## Azure Open AI Application Landing Zone Solution Accelerator  
 ### Overview  
 The goal of this landing zone solution accelerator is to help you quickly set up your development and production environments for your Generative AI solution built with Azure Open AI and Azure Services. We provide deployment templates for common Gen AI solution patterns and allow you to customize based on your own scenario. We also recommend best practices about technologies to use in each scenario.  
 ### How to use this solution accelerator  
@@ -11,8 +11,8 @@ Then depending on your application scenario, follow one of the patterns below to
 &nbsp;  
 ![Gen AI Use Cases](media/gen_ai_use_cases.png)  
 &nbsp;  
-### [Set up Foundation Infrastructure](./foundation/)  
-### Set up Scenario Specific Services    
+### [1. Set up Foundation Infrastructure](./foundation/)  
+### 2. Set up Scenario Specific Services (Work in Progress)    
 - #### [Summarization](./scenarios/summarization/)  
 - #### [Retrieval Augmented Generation](./scenarios/rag/)  
 - #### [Data Driven Decisioning](./scenarios/data_driven_decisioning/)  

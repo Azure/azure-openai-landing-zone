@@ -14,6 +14,7 @@ param locationStaticWebApp string ='westus2'
 param locationOpenAI string = 'canadaeast'
 param env string = 'dev'
 param postFix string = '-02'
+param globalName string ='oai-standalone'
 
 
 /*
@@ -52,7 +53,7 @@ param appSubnetAddressPrefix string  = '11.0.4.0/24'
 */
   
 param gptDeploymentName string= 'gpt-4'
-param searchIndexName string= 'idx-aoai-standalone'
+param searchIndexName string= 'idx-a${globalName}'
 param chatGptModelVersion string ='1106-Preview'
 param chatGptDeploymentCapacity int = 5
 param embeddingDeploymentName  string=  'text-embedding-ada-002'
@@ -64,30 +65,30 @@ param embeddingDeploymentCapacity int =5
   The parameters include search service, key vault, OpenAI, document intelligence, storage endpoint, app service plan, Azure function, and static website names.
   These parameters can be customized to fit the specific requirements of the deployment.
 */
-param searchServiceName string = 'ais-aoai-standalone-${env}${postFix}'
+param searchServiceName string = 'ais-a${globalName}-${env}${postFix}'
 param skuName string = 'basic'
 param privateEndpointName string = 'pv-search-oai-${env}${postFix}'
 param privateDnsZoneNameSearch string = 'privatelink.search.windows.net'
 
-param keyvaultName string = 'kv-oai-standalone-${env}${postFix}'
+param keyvaultName string = 'kv-${globalName}-${env}${postFix}'
 param keyvaultPleName string = 'pv-kv-oai-${env}${postFix}'
 
 param privateEndpointOpenAIName string = 'pe-oai-${env}${postFix}'
 param skuOpenAI string = 'S0'
-param OpenAIName string = 'oai-standalone-${env}${postFix}'
+param OpenAIName string = '${globalName}-${env}${postFix}'
 param privateDnsZoneNameOpenAI string = 'privatelink.openai.azure.com'
 
 
 param privateEndpointDocumentIntelligenceName string = 'pe-form-${env}${postFix}'
 param skuDocumentIntelligence string = 'S0'
-param DocumentIntelligenceName string ='frm-standalone-${env}${postFix}' 
+param DocumentIntelligenceName string ='frm-${globalName}-${env}${postFix}' 
 param privateDnsZoneNameDocumentIntelligence string = 'privatelink.cognitiveservices.azure.com'
 
 param  storageEndpointDocumentIntelligenceName string   = 'pe-storage-${env}${postFix}'   
 
 param appServicePlanName string = 'asp-03-${env}${postFix}'
-param azFunctionName string = 'afn-aoai-standalone-${env}${postFix}'
-param staticWebsiteName string = 'swa-aoai-standalone-${env}${postFix}'
+param azFunctionName string = 'afn-a${globalName}-${env}${postFix}'
+param staticWebsiteName string = 'swa-a${globalName}-${env}${postFix}'
 
 
 
@@ -214,7 +215,7 @@ module storageAccount './core/storage.bicep' = {
     subnetId: vnet.outputs.subnets[1].id
     vnetId: vnet.outputs.id
     containerNames: [
-      'oai-standalone'
+      '${globalName}'
     ]
     tags: {
     }
@@ -254,7 +255,7 @@ module function './host/azfunctions.bicep' = {
     azureSearchIndex: searchIndexName
     azureSearchService: searchServiceModule.outputs.name
     //azureSearchServiceKey: ''
-    azureStorageContainerName: 'oai-standalone'
+    azureStorageContainerName: '${globalName}'
     formRecognizerService: privateEndpointFormRecogModule.outputs.name
     //formRecognizerServiceKey: ''
     runtimeName: 'python'
