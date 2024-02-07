@@ -1,5 +1,7 @@
 # Azure AI Studio Bicep Deployment
 
+This repo deploy Azure AI studio with VNet integration. 
+
 ### Azure AI Studio Landing Zone components
 
 The diagram shows the components of Azure AI studio which can be deployed using the bicep deployments
@@ -36,7 +38,7 @@ To deploy Azure AI studio using Bicep, you need to have the following:
 
 - **New or Existing Resource Group**: Ensure you have a new or an existing resource group with contributor permissions.
 - **Azure OpenAI Enabled**: Azure OpenAI service must be enabled on your Azure subscription.
-- **Existing Virtual Network (VNet)**: A VNet should be pre-provisioned with permissions to deploy a Private Endpoint in a subnet.
+- **Existing Virtual Network (VNet)**: A VNet should be pre-provisioned with permissions to deploy a Private Endpoint in a subnet. Connectivity to the VNet should be established from on-premises or local machine. 
 - **Existing Private DNS Zone**: You should have a private DNS zone for the below DNS names. 
     
     ```
