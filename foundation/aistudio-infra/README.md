@@ -191,7 +191,7 @@ Follow these steps to log into your Azure account using the Azure CLI.
 
       ```
       cd azure-openai-landing-zone/foundation/aistudio-infra/tests
-      ./pftests.sh
+      ./pftest.sh
       ```
 
     Script in action:
