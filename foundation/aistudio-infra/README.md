@@ -16,7 +16,6 @@ Enterprise teams can deploy the Azure studio components within an Azure Virtual 
 Azure AI Projects supports the following components
 
 <img src="./assets/aiproject.png" width="500">
-![Alt text]()
 
 Azure Studio AI supports two modes Virtual Network integration. 
 
@@ -128,7 +127,7 @@ Follow these steps to log into your Azure account using the Azure CLI.
 
     Replace `<resource-group>` with your Azure resource group:
     ```
-    git clone https://github.com/anildwarepo/azure-openai-landing-zone/
+    git clone https://github.com/Azure/azure-openai-landing-zone
     cd azure-openai-landing-zone/foundation/aistudio-infra/scripts
     
     # This script calls the bicep file to deploy the AI Studio components based on the input parameters. 
@@ -156,8 +155,36 @@ Follow these steps to log into your Azure account using the Azure CLI.
     10.0.2.110 a01f4093-b06e-4aaf-a2ce-dc45cdc874aa.workspace.westus.cert.api.azureml.ms
     ```
     This information can be used to configure DNS forwarding to the private DNS zone. 
+
+4. **Deploy Additional Projects**:
+    
+    If you want to deploy additional projects, you can use the below script. Replace the parameters with your actual values.
+
+    ```
+    cd azure-openai-landing-zone/foundation/aistudio-infra/scripts
+    ./provision_ai_project.sh
+    ```
+     
+    ```
+    Please provide resource group name:
+    test1
+    Please provide location. For e.g westus, eastus2, northcentralus:
+    westus
+    Create new AI Resource? (y/n):
+    n
+    Create new AI project? (y/n):
+    y
+    ```
+
+    This script will prompt for the following parameters:
+
+    ```
+    PROJECT_NAME=<your Project Name>
+    ```
+
+    This script will deploy the AI project to the existing AI resource.
  
-4. **Test Azure AI resource Endpoint**:
+5. **Test Azure AI resource Endpoint**:
 
     For a local testing without DNS forwarding, add the above DNS name and IP address to hosts file and run the below script. 
     The below scripts initiates a chatbot converation with the deployed Azure AI resource using promptflow CLI. 
