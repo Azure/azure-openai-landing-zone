@@ -15,9 +15,9 @@ This is based on the following repository: https://github.com/lordlinus/Enterpri
 -   Python 3.x with  `pip`  in the PATH.
 -   Node.js.
 -   PowerShell 7+ (Windows users).
--   Static Web Apps CLI.
+-   [Static Web Apps CLI](https://azure.github.io/static-web-apps-cli/docs/use/install/).
 -   Azure CLI.
--   Azure Functions Core Tools.
+-   [Azure Functions Core Tools](https://github.com/Azure/azure-functions-core-tools).
 
 Ensure your Azure Account has the necessary permissions (`Microsoft.Authorization/roleAssignments/write`) like User Access Administrator or Owner.
 
@@ -28,9 +28,10 @@ The backend of this application consists of Azure Functions, which are deployed 
 ### Steps to Deploy Backend:
 
 1.  Make sure you have installed all prerequisites.
-2.  Open a terminal and navigate to the backend folder of your project.
-3.  Login to Azure using Azure CLI by running  `az login`.
-4.  Set your Azure subscription by running  `az account set --subscription "<your target subscription>"`.
+2.  Git clone the repository
+3.  Open a terminal and navigate to the backend folder of your project.
+4.  Login to Azure using Azure CLI by running  `az login`.
+5.  Set your Azure subscription by running  `az account set --subscription "<your target subscription>"`.
 6.  Deploy your backend Azure Functions using the following command:
     
     ```sh
@@ -45,7 +46,7 @@ The frontend is a Static Web App (SWA) and can be deployed using the SWA CLI.
 
 ### Steps to Deploy Frontend:
 
-1.  Ensure that all prerequisites are installed and properly configured.
+1.  Ensure that all prerequisites are installed and properly configured and that you have cloned the repository.
 2.  Obtain the deployment token for Azure Static Web Apps. For this, you may need to navigate to your app in the Azure portal and generate/retrieve the deployment token from the Overview tab using the "Manage deployment token
 " button.
 1. Open a terminal and navigate to the frontend folder of your project.
