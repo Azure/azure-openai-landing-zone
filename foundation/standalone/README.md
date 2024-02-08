@@ -78,7 +78,7 @@ The output from this deployment will provide you with the resource IDs and endpo
 
 ### 3. Deploy the Application
 
-After successfully deploying the infrastructure, proceed to deploy the application using the instructions in the  `app`  folder. This might involve running additional commands, and you may need to navigate to the specific subdirectory where your application code resides.
+After successfully deploying the infrastructure, proceed to deploy the application using the instructions in the  [`app`  folder](https://github.com/Azure/azure-openai-landing-zone/tree/main/foundation/standalone/app) This might involve running additional commands, and you may need to navigate to the specific subdirectory where your application code resides.
 
 
 
