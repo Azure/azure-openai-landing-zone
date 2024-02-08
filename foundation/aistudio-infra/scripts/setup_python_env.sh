@@ -8,6 +8,14 @@ print_status() {
 
 
 RESOURCE_GROUP_NAME=$1
+LOCATION=$2
+
+
+subscription_id=$(az account show | jq -r .id)
+ai_resource_name=$(az resource list -g $RESOURCE_GROUP_NAME -l $LOCATION --query "[?kind=='Hub']" | jq -r .[0].name)
+search_service_name=$(az resource list -g $RESOURCE_GROUP_NAME -l $LOCATION --query "[?type=='Microsoft.Search/searchServices']" | jq -r .[].name)
+aisearch_api_key=$(az search admin-key show -g $RESOURCE_GROUP_NAME --service-name $search_service_name  | jq -r .primaryKey)
+ai_search_connection_name="${search_service_name}_connection_$(uuidgen)"
 
 CONDA_ENV_NAME="aoai-landingzone"
 
@@ -37,11 +45,7 @@ else
     conda create -n $CONDA_ENV_NAME python=3.10
 fi
 
-subscription_id=$(az account show | jq -r .id)
-ai_resource_name=$(az resource list -g $RESOURCE_GROUP_NAME --query "[?kind=='Hub']" | jq -r .[0].name)
-search_service_name=$(az resource list -g $RESOURCE_GROUP_NAME --query "[?type=='Microsoft.Search/searchServices']" | jq -r .[].name)
-aisearch_api_key=$(az search admin-key show -g $RESOURCE_GROUP_NAME --service-name $search_service_name  | jq -r .primaryKey)
-ai_search_connection_name="${search_service_name}_connection_$(uuidgen)"
+
 
 source ~/miniconda3/etc/profile.d/conda.sh
 

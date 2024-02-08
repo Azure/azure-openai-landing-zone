@@ -1,5 +1,5 @@
 using './azure-ai-project.bicep'
 
-//param location = 'westus'
-//param azureAIResourceName = 'azure-ai-f7k333bu6uhv6'
-//param azureAIProjectResourceName
+param azureAIResourceName = '<name of existing AI resource>'  
+param azureAIProjectResourceName = '<AI Project Name>' 
+
