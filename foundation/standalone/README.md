@@ -60,6 +60,7 @@ Make sure to customise the name for the following parameters, otherwise you migh
 - global name => your own name instead of oai-standalone, keep it short.
 - postFix => a random postfix if needed
 - env => prod,dev,test,etc.
+- Accord to the services available in your region you can customise the location for each resource.
 
 ### 2. Infrastructure Deployment
 
