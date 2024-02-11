@@ -48,6 +48,10 @@ resource existingEventHubAuthRule 'Microsoft.EventHub/namespaces/eventhubs/autho
 resource apiManagementAPI 'Microsoft.ApiManagement/service/apis@2023-03-01-preview' = [for API in items(APIPolicies): {
   parent: existingApiManagement
   name: API.value.name
+  dependsOn: [
+    namedValuesEndpoints
+    namedValuesKeys
+  ]
   properties: {
     displayName: API.value.name
     format: 'openapi+json'
