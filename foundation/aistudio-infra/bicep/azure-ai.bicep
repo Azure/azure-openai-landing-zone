@@ -1,8 +1,18 @@
-@description('Specifies the name of the Azure AI Studio Resource')
+@description('Specifies the name of the Azure AI Studio Resource.')
 param azureAIResourceName string = 'ai-${uniqueString(resourceGroup().id)}'
 
-//@description('Specifies the Name of the project under Azure AI Resource.')
-//param azureAIProjectResourceName string //= 'ai-project-${uniqueString(resourceGroup().id)}'
+
+@description('Azure OpenAI Model Name.')
+param azureOpenAIModelName string 
+
+@description('Azure OpenAI Model Version.')
+param azureOpenAIModelVersion string
+
+@description('Model Deployment Name.')
+param modelDeploymentName string
+
+@description('Deployment Capacity in 1000s TPM.')
+param modelDeploymentCapacity int
 
 @description('Specifies log workspace name of the log workspace created for the Application Insights.')
 param appInsightsLogWorkspaceName string = 'appinsights-workspace-${uniqueString(resourceGroup().id)}'
@@ -80,7 +90,7 @@ param hostingMode string = 'default'
 param location string = resourceGroup().location
 
 @description('Private endpoint for a Azure AI Resource.')
-param privateEndpointName string = 'ai-${uniqueString(resourceGroup().id)}-pe'
+param privateEndpointName string = '${azureAIResourceName}-pe'
 
 @description('Vnet resource group name.')
 param vnetRgName string
@@ -262,7 +272,7 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-06-01' existing 
 */
 
 resource modelDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
-  name: '${azureAIResourceName}-aiservice-model-gpt-35-turbo'
+  name: '${azureAIResourceName}-${modelDeploymentName}'
   parent: azureAIService
   dependsOn: [
     azureaiResourceAOAIEndpoint
@@ -271,14 +281,14 @@ resource modelDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-
   properties: {
     model: {
       format: 'OpenAI'
-      name: 'gpt-35-turbo'
-      version: '0613'
+      name: azureOpenAIModelName
+      version: azureOpenAIModelVersion
     }
     raiPolicyName: 'Microsoft.Default'
   }
   sku: {
     name: 'Standard'
-    capacity: 1
+    capacity: modelDeploymentCapacity
   }
 }
 

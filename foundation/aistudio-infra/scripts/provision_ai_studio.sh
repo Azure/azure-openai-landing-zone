@@ -26,6 +26,7 @@ do
     read LOCATION
 done
 
+
 while [ -z "${NEW_AI_RESOURCE}" ] || { [ "${NEW_AI_RESOURCE}" != true ] && [ "${NEW_AI_RESOURCE}" != false ]; }
 do
     print_warning "Create new AI Resource? (y/n):"
@@ -67,24 +68,24 @@ fi
 
 if [ $NEW_AI_RESOURCE == true ]; then
     print_status "Creating Azure AI resources in resource group $RESOURCE_GROUP_NAME in $LOCATION"
-    az deployment group create --resource-group $RESOURCE_GROUP_NAME --template-file ../bicep/azure-ai.bicep --parameters ../bicep/azure-ai.bicepparam
+    az deployment group create --resource-group $RESOURCE_GROUP_NAME --template-file ../bicep/azure-ai.bicep --parameters ../bicep/azure-ai-local.bicepparam
     if [ $? -eq 0 ]; then
         print_status "Azure AI resources created successfully in resource group $RESOURCE_GROUP_NAME in $LOCATION"
         print_status "Retreving IP Address and DNS information for resource group $RESOURCE_GROUP_NAME in $LOCATION"
-        ./get_ipconfig.sh $RESOURCE_GROUP_NAME
+        ./get_ipconfig.sh $RESOURCE_GROUP_NAME $LOCATION 
         print_status "Setting up AI studio connections..."
-        ./setup_python_env.sh $RESOURCE_GROUP_NAME
+        ./setup_python_env.sh $RESOURCE_GROUP_NAME $LOCATION 
     fi
 fi
 
 if [ $CREATE_PROJECT == true ]; then
     
     print_status "Creating project in resource group $RESOURCE_GROUP_NAME in $LOCATION"
-    az deployment group create --resource-group $RESOURCE_GROUP_NAME --template-file ../bicep/azure-ai-project.bicep #--parameters ../bicep/azure-ai-project.bicepparam
+    az deployment group create --resource-group $RESOURCE_GROUP_NAME --template-file ../bicep/azure-ai-project.bicep --parameters ../bicep/azure-ai-project-local.bicepparam
     if [ $? -eq 0 ]; then
         print_status "Azure AI Project created successfully in resource group $RESOURCE_GROUP_NAME in $LOCATION"
         print_status "Retreving IP Address and DNS information for resource group $RESOURCE_GROUP_NAME in $LOCATION"
-        ./get_ipconfig.sh $RESOURCE_GROUP_NAME
+        ./get_ipconfig.sh $RESOURCE_GROUP_NAME $LOCATION 
     fi
 fi
 

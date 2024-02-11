@@ -1,5 +1,7 @@
 # Azure AI Studio Bicep Deployment
 
+This repo deploy Azure AI studio with VNet integration. 
+
 ### Azure AI Studio Landing Zone components
 
 The diagram shows the components of Azure AI studio which can be deployed using the bicep deployments
@@ -16,7 +18,6 @@ Enterprise teams can deploy the Azure studio components within an Azure Virtual 
 Azure AI Projects supports the following components
 
 <img src="./assets/aiproject.png" width="500">
-![Alt text]()
 
 Azure Studio AI supports two modes Virtual Network integration. 
 
@@ -37,7 +38,7 @@ To deploy Azure AI studio using Bicep, you need to have the following:
 
 - **New or Existing Resource Group**: Ensure you have a new or an existing resource group with contributor permissions.
 - **Azure OpenAI Enabled**: Azure OpenAI service must be enabled on your Azure subscription.
-- **Existing Virtual Network (VNet)**: A VNet should be pre-provisioned with permissions to deploy a Private Endpoint in a subnet.
+- **Existing Virtual Network (VNet)**: A VNet should be pre-provisioned with permissions to deploy a Private Endpoint in a subnet. Connectivity to the VNet should be established from on-premises or local machine. 
 - **Existing Private DNS Zone**: You should have a private DNS zone for the below DNS names. 
     
     ```
@@ -128,9 +129,22 @@ Follow these steps to log into your Azure account using the Azure CLI.
 
     Replace `<resource-group>` with your Azure resource group:
     ```
-    git clone https://github.com/anildwarepo/azure-openai-landing-zone/
+    git clone https://github.com/Azure/azure-openai-landing-zone
     cd azure-openai-landing-zone/foundation/aistudio-infra/scripts
+
+4. **Update Bicep param file**:
+    Edit the `azure-ai.bicepparam` file to update the parameters:
+
+    ```
+    param location = '<Location of Resource group and resources>' // e.g 'westus'
+    param azureAIResourceName = 'globally unique name for AI resource'  // e.g 'azure-ai-7uj23hng7h22c-westus'. Leave it blank create a new AI resource with a random UUID.
+    param privateEndpointName = 'Private endpoint name for the AI Resource' // e.g 'azure-ai-7uj23hng7h22c-westus-pe'
+    param vnetRgName = 'existing vnet resource group name'
+    param vnetName = 'existng vnet name'
+    param vnetLocation = 'vnet location' e.g 'westus'
+    param subnetName = 'existing subnet name'
     
+
     # This script calls the bicep file to deploy the AI Studio components based on the input parameters. 
     # This script also configures python environment and install pip packages required for the tests.
     ./provision_ai_studio.sh
@@ -156,15 +170,43 @@ Follow these steps to log into your Azure account using the Azure CLI.
     10.0.2.110 a01f4093-b06e-4aaf-a2ce-dc45cdc874aa.workspace.westus.cert.api.azureml.ms
     ```
     This information can be used to configure DNS forwarding to the private DNS zone. 
+
+5. **Deploy Additional Projects**:
+    
+    If you want to deploy additional projects, you can use the below script. Replace the parameters with your actual values.
+
+    ```
+    cd azure-openai-landing-zone/foundation/aistudio-infra/scripts
+    ./provision_ai_project.sh
+    ```
+     
+    ```
+    Please provide resource group name:
+    <existing resource group name that contains the AI resource>
+    Please provide location. For e.g westus, eastus2, northcentralus:
+    westus
+    Create new AI Resource? (y/n):
+    n
+    Create new AI project? (y/n):
+    y
+    ```
+
+    This script will prompt for the following parameters:
+
+    ```
+    PROJECT_NAME=<your Project Name>
+    ```
+
+    This script will deploy the AI project to the existing AI resource.
  
-4. **Test Azure AI resource Endpoint**:
+6. **Test Azure AI resource Endpoint**:
 
     For a local testing without DNS forwarding, add the above DNS name and IP address to hosts file and run the below script. 
     The below scripts initiates a chatbot converation with the deployed Azure AI resource using promptflow CLI. 
 
       ```
       cd azure-openai-landing-zone/foundation/aistudio-infra/tests
-      ./pftests.sh
+      ./pftest.sh
       ```
 
     Script in action:
