@@ -23,7 +23,7 @@ resource apiManagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   name: apiManagementName
   location: location
   sku: {
-    name: 'StandardV2'
+    name: 'Standard'
     capacity: 1
   }
   identity: {

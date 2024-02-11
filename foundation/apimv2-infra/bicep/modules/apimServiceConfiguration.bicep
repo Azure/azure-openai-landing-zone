@@ -24,7 +24,6 @@ param APIPolicies object
 
 var openAIOpenAPISpec = loadTextContent('../artifacts/apim_v2_openai_2023_12_01_preview_inference_spec.openapi+json.json')
 
-
 //****************************************************************************************
 // Existing resource references
 //****************************************************************************************
@@ -48,6 +47,10 @@ resource existingEventHubAuthRule 'Microsoft.EventHub/namespaces/eventhubs/autho
 resource apiManagementAPI 'Microsoft.ApiManagement/service/apis@2023-03-01-preview' = [for API in items(APIPolicies): {
   parent: existingApiManagement
   name: API.value.name
+  dependsOn: [
+    namedValuesEndpoints
+    namedValuesKeys
+  ]
   properties: {
     displayName: API.value.name
     format: 'openapi+json'
@@ -90,7 +93,7 @@ resource apiManagementAPIPolicy 'Microsoft.ApiManagement/service/apis/policies@2
 resource apiManagementProduct 'Microsoft.ApiManagement/service/products@2023-03-01-preview' = {
   parent: existingApiManagement
   name: 'openai'
-  dependsOn: [apiManagementAPI]
+  dependsOn: [ apiManagementAPI ]
   properties: {
     displayName: 'OpenAI'
     description: 'Echo for Azure OpenAI API Calls'
@@ -281,9 +284,9 @@ resource serviceAzureMonitorDiagnostic 'Microsoft.ApiManagement/service/diagnost
   }
 }
 
-resource serviceAPIAppInsightsDiagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2023-03-01-preview' = [for API in items(APIPolicies):{
+resource serviceAPIAppInsightsDiagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2023-03-01-preview' = [for API in items(APIPolicies): {
   name: '${apiManagementName}/${API.value.name}/applicationinsights'
-  dependsOn: [apiManagementAPI]
+  dependsOn: [ apiManagementAPI ]
   properties: {
     alwaysLog: 'allErrors'
     httpCorrelationProtocol: 'Legacy'
@@ -326,9 +329,9 @@ resource serviceAPIAppInsightsDiagnostic 'Microsoft.ApiManagement/service/apis/d
   }
 }]
 
-resource serviceAPIAzureMonitorDiagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2023-03-01-preview' = [for API in items(APIPolicies):{
+resource serviceAPIAzureMonitorDiagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2023-03-01-preview' = [for API in items(APIPolicies): {
   name: '${apiManagementName}/${API.value.name}/azuremonitor'
-  dependsOn: [apiManagementAPI]
+  dependsOn: [ apiManagementAPI ]
   properties: {
     alwaysLog: 'allErrors'
     verbosity: 'verbose'
@@ -369,9 +372,9 @@ resource serviceAPIAzureMonitorDiagnostic 'Microsoft.ApiManagement/service/apis/
   }
 }]
 
-resource serviceAPILocalDiagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2023-03-01-preview' = [for API in items(APIPolicies):{
+resource serviceAPILocalDiagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2023-03-01-preview' = [for API in items(APIPolicies): {
   name: '${apiManagementName}/${API.value.name}/local'
-  dependsOn: [apiManagementAPI]
+  dependsOn: [ apiManagementAPI ]
   properties: {
     alwaysLog: 'allErrors'
     verbosity: 'verbose'
