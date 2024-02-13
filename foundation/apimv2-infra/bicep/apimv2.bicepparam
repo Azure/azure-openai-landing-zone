@@ -4,6 +4,14 @@ param prefix = 'exampleprefix'
 
 param location = 'eastus'
 
+param privateDeployment = true
+
+param virtualNetworkResourceGroupName = 'Shared-Services-Do-Not-Delete'
+
+param virtualNetworkName = 'EastUS-VNet'
+
+param subnetName = 'apim'
+
 param secretsObject = {
   aoaiaustraliaeastkey: {
     secretName: 'aoai-australiaeast-key'

@@ -22,11 +22,19 @@ param prefix string
 
 param location string
 
+param privateDeployment bool
+
 @description('Specifies all secrets wrapped in a secure object.')
 @secure()
 param secretsObject object
 
 param APIPolicies object
+
+param virtualNetworkResourceGroupName string
+
+param virtualNetworkName string
+
+param subnetName string
 
 //****************************************************************************************
 // Variables
@@ -45,6 +53,22 @@ var logAnalyticsWorkspaceName = '${prefix}-log'
 var applicationInsightsName = '${prefix}-appi'
 var storageAccountName = '${prefix}st'
 var streamAnalyticsName = '${prefix}-asa'
+var publicIPName = '${prefix}-pip'
+var nsgName = '${prefix}-nsg'
+
+// Variables used to preconcatenate the names of the resources
+
+var subnetFullName = '${virtualNetworkName}/${subnetName}'
+
+//****************************************************************************************
+// Existing resource references
+//****************************************************************************************
+
+resource existingSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' existing = if (privateDeployment) {
+  name: subnetFullName
+  scope: resourceGroup(virtualNetworkResourceGroupName)
+}
+
 
 //****************************************************************************************
 // Resources
@@ -67,7 +91,17 @@ module deployAPIM './modules/apimService.bicep' = {
   params: {
     apiManagementName: apiManagementName
     location: location
+    privateDeployment: privateDeployment
+    virtualNetworkResourceGroupName: virtualNetworkResourceGroupName
+    virtualNetworkName: virtualNetworkName
+    subnetName: subnetName
+    publicIPID: (privateDeployment ? deployPublicIP.outputs.publicIPID : '')
   }
+  dependsOn: (privateDeployment ? [
+    deployNetworkSecurityGroup
+    deployNSGAttach
+    deployPublicIP
+  ] : [])
 }
 
 module deployAPIMConfiguration './modules/apimServiceConfiguration.bicep' = {
@@ -88,6 +122,7 @@ module deployAPIMConfiguration './modules/apimServiceConfiguration.bicep' = {
     deployRoleAssignments
     deployApplicationInsights
     deployEventHub
+    deployPublicIP
   ]
 }
 
@@ -174,5 +209,39 @@ module deployRoleAssignments './modules/roleAssignment.bicep' = {
   dependsOn: [
     deployAPIM
     deployKeyVault
+  ]
+}
+
+module deployPublicIP './modules/publicIP.bicep' = if (privateDeployment) {
+  name: 'PublicIP'
+  scope: deployResourceGroup
+  params: {
+    publicIPName: publicIPName
+    location: location
+  }
+}
+
+module deployNetworkSecurityGroup './modules/apimNSG.bicep' = if (privateDeployment) {
+  name: 'NetworkSecurityGroup'
+  scope: deployResourceGroup
+  params: {
+    nsgName: nsgName
+    location: location
+  }
+}
+
+module deployNSGAttach './modules/apimNSGAttach.bicep' = if (privateDeployment) {
+  name: 'NSGAttach'
+  scope: resourceGroup(virtualNetworkResourceGroupName)
+  params: {
+    subnetFullName: subnetFullName
+    properties: union(existingSubnet.properties, {
+      networkSecurityGroup: {
+        id: deployNetworkSecurityGroup.outputs.nsgId
+      }
+    })
+  }
+  dependsOn: [
+    deployNetworkSecurityGroup
   ]
 }
