@@ -6,9 +6,9 @@ param location = 'eastus'
 
 param privateDeployment = true
 
-param virtualNetworkResourceGroupName = 'Shared-Services-Do-Not-Delete'
+param virtualNetworkResourceGroupName = ''
 
-param virtualNetworkName = 'EastUS-VNet'
+param virtualNetworkName = ''
 
 param subnetName = 'apim'
 
