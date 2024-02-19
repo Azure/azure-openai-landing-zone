@@ -1,0 +1,9 @@
+variable "resource_group_name" {}
+variable "location" {}
+variable "virtual_network_name" {}
+variable "address_prefix" {}
+variable "ai_subnet_address_prefix" {}
+variable "private_endpoints_subnet_address_prefix" {}
+variable "bastion_subnet_address_prefix" {}
+variable "jumpbox_subnet_address_prefix" {}
+variable "app_subnet_address_prefix" {}
