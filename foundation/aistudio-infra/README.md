@@ -57,6 +57,7 @@ should already have virtual network links to the VNet.
 - **Resource Group Names**: Know the resource group names for your VNet and private DNS zones.
 - **Azure CLI**: The Azure Command Line Interface (CLI) should be installed on your system.
 - **Bash**: Ensure you have PowerShell (for Windows) or Bash (for Linux/Mac) installed.
+- **Jq**: The [jq utility](https://jqlang.github.io/jq/download/) should be installed on your system.
 - **Azure Portal Login**: Make sure you are logged into the Azure Portal using the Azure CLI.
 - **Usernames**: Prepare a list of usernames (in the format `username@domain.com`) that need to be provisioned.
 - **DNS Forwarding**: DNS conditional forwarding will be required if multiple Azure AI resources as provisioned as documented [here](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-custom-dns?view=azureml-api-2&tabs=azure-cli#example-custom-dns-server-hosted-in-vnet).
