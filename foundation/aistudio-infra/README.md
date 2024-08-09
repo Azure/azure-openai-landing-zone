@@ -160,6 +160,7 @@ Follow these steps to log into your Azure account using the Azure CLI.
       ./pftest.sh
       ```
 
+    
     Script in action:
     ![Alt text](./assets/pftest.png)
 
