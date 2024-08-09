@@ -140,12 +140,15 @@ Follow these steps to log into your Azure account using the Azure CLI.
     This scripts outputs the DNS names and IP addresses of the private endpoints created. For e.g.:
 
     ```
-    10.0.2.110 c4524ea0-cca1-4f75-81a6-bc48263e1284.workspace.westus.api.azureml.ms
-    10.0.2.110 c4524ea0-cca1-4f75-81a6-bc48263e1284.workspace.westus.cert.api.azureml.ms
-    10.0.2.111 ml-ai-c2u66zp7iicfc-westus-c4524ea0-cca1-4f75-81a6-bc48263e1284.westus.notebooks.azure.net
-    10.0.2.112 *.c4524ea0-cca1-4f75-81a6-bc48263e1284.inference.westus.api.azureml.ms
-    10.0.2.105 sac2u66zp7iicfc.blob.core.windows.net
-    10.0.2.106 sac2u66zp7iicfc.file.core.windows.net
+    10.0.2.39 b1d99e57-77b5-4cbf-911e-a280d9f1b8ed.workspace.westus.api.azureml.ms
+    10.0.2.39 b1d99e57-77b5-4cbf-911e-a280d9f1b8ed.workspace.westus.cert.api.azureml.ms
+    10.0.2.4 ml-aih-lz-test1-r-4-westus-b1d99e57-77b5-4cbf-911e-a280d9f1b8ed.westus.notebooks.azure.net
+    10.0.2.40 *.b1d99e57-77b5-4cbf-911e-a280d9f1b8ed.inference.westus.api.azureml.ms
+    10.0.2.41 *.b1d99e57-77b5-4cbf-911e-a280d9f1b8ed.models.westus.api.azureml.ms
+    10.0.2.36 stanildwa4rda.blob.core.windows.net
+    10.0.2.35 stanildwa4rda.file.core.windows.net
+    10.0.2.37 aianildwa4rda.cognitiveservices.azure.com
+    10.0.2.38 aianildwa4rda.openai.azure.com
 
     ```
     This information can be used to configure DNS forwarding to the private DNS zone. 
@@ -160,6 +163,7 @@ Follow these steps to log into your Azure account using the Azure CLI.
       ./pftest.sh
       ```
 
+    You can also use the ai-service-chat-test.ipynb notebook to test the deployed Azure AI resource.
     
     Script in action:
     ![Alt text](./assets/pftest.png)
