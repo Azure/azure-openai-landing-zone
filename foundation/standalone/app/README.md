@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 # Readme for Deploying ChatGPT + Enterprise Data with Azure OpenAI
 
 This Azure OpenAI solution allows you to leverage the power of ChatGPT with enterprise data. It includes features like file uploads through UI, integration with Azure Cognitive Search, and the ability to use Bing Search. Below you will find instructions for deploying both the frontend and backend components of this application.
