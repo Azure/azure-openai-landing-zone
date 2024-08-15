@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 # Readme for Deploying ChatGPT + Enterprise Data with Azure OpenAI
 
 This Azure OpenAI solution allows you to leverage the power of ChatGPT with enterprise data. It includes features like file uploads through UI, integration with Azure Cognitive Search, and the ability to use Bing Search. Below you will find instructions for deploying both the frontend and backend components of this application.
@@ -147,4 +145,3 @@ The frontend is a Static Web App (SWA) and can be deployed using the SWA CLI.
 -   **Resource Costs**: Be aware of the potential costs associated with Azure resources used. You can opt for free versions where applicable, but take note of their limitations.
 
 After deploying both the frontend and backend, you should be able to access the application through the URL provided at the completion of the deployment process or through the Azure portal.`enter code here`
->>>>>>> 3a685379491b031fe2622bcd45a8a0ba28cce1aa

@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 # Azure OpenAI Standalone Application Landing Zone 
 
 ## Architecture Overview
