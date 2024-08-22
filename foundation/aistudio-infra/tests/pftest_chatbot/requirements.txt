@@ -1,1 +1,4 @@
 promptflow
+promptflow-tools
+keyrings.alt
+azure.identity

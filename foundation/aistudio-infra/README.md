@@ -159,8 +159,15 @@ Follow these steps to log into your Azure account using the Azure CLI.
     For a local testing without DNS forwarding, add the above DNS name and IP address to hosts file and run the below script. 
     The below scripts initiates a chatbot converation with the deployed Azure AI resource using promptflow CLI. 
 
-      ```
+    Make sure you have conda installed and conda environment is created.
+
+    ```
       cd azure-openai-landing-zone/foundation/aistudio-infra/tests
+      conda activate <your conda env name>
+      pip install -r requirements.txt
+      ```
+
+      ```
       ./pftest.sh
       ```
 

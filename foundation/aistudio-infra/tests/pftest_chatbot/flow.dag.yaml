@@ -19,7 +19,7 @@ nodes:
     type: code
     path: chat.jinja2
   inputs:
-    deployment_name: aianildwatkyo-gpt-4o 
+    deployment_name: aianildwa4rda-gpt-4o 
     max_tokens: '256'
     temperature: '0.7'
     chat_history: ${inputs.chat_history}
