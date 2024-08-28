@@ -1,0 +1,62 @@
+# If you are using a Linux environment to deploy this landing zone, follow these steps to setup your environment
+# Please note that these commands were used in a specific Ubuntu Linux 22.04.1
+# You can easily create a shell script and modify these to fit your own Linux distro 
+
+$ sudo apt update
+$ sudo apt install python3-pip
+
+# Verify install
+$ python3 --version
+  Python 3.12.4
+
+# Verify install
+$ pip3 --version
+  pip 24.2 from ~/miniconda3/lib/python3.12/site-packages/pip (python 3.12)
+
+$ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+
+$ chmod +x Miniconda3-latest-Linux-x86_64.sh
+$ ./Miniconda3-latest-Linux-x86_64.sh
+
+# you may have to start a new shell or source your .bashrc then verify
+$ conda --version
+  conda 24.7.1
+
+$ conda create -n <your-conda-env-name> python=3.10
+$ curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+# Verify install
+$ az --version
+  azure-cli                         2.63.0
+  ...
+
+$ pip install azure.identity
+$ pip install azure-mgmt-resource
+$ pip install keyring
+$ pip install keyrings.alt
+
+# Verify installs
+$ pip list | grep azure
+  azure-common                             1.1.28
+  azure-core                               1.30.2
+  azure-identity                           1.17.1
+  azure-mgmt-core                          1.4.0
+  azure-mgmt-resource                      23.1.1
+  azure-monitor-opentelemetry-exporter     1.0.0b28
+
+$ pip install promptflow --upgrade
+
+# Verify install
+$ pf --version
+  {
+    "promptflow": "1.15.0",
+    "promptflow-core": "1.15.0",
+    "promptflow-devkit": "1.15.0",
+    "promptflow-tracing": "1.15.0"
+  }
+
+  Executable '~/miniconda3/bin/python'
+  Python (Linux) 3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]
+
+# You can now continue with the Deployment Steps:
+$ az login

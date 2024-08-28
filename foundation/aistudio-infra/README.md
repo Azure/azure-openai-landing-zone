@@ -55,6 +55,7 @@ should already have virtual network links to the VNet.
 
     ```
 - **Resource Group Names**: Know the resource group names for your VNet and private DNS zones.
+- **Linux Environment**: If you are using a Linux environment to deploy see this [link](scripts/linux-env-setup.txt).
 - **Azure CLI**: The Azure Command Line Interface (CLI) should be installed on your system.
 - **Bash**: Ensure you have PowerShell (for Windows) or Bash (for Linux/Mac) installed.
 - **Jq**: The [jq utility](https://jqlang.github.io/jq/download/) should be installed on your system.
@@ -67,7 +68,7 @@ should already have virtual network links to the VNet.
 <img src="./assets/modelregions.png" width="500">
 
 
-Please refer to the regional availability of the Azure AI resources:
+Please make sure to refer to the regional availability of the Azure AI resources before deployment.  Some resources and services may not be available in all regions:
 
 - [Azure AI Studio](https://azure.microsoft.com/en-us/global-infrastructure/services/?products=machine-learning-service)
 - [Azure Regions](https://azure.microsoft.com/en-us/explore/global-infrastructure/geographies/#geographies)
@@ -103,10 +104,10 @@ Follow these steps to log into your Azure account using the Azure CLI.
     cd azure-openai-landing-zone/foundation/aistudio-infra/scripts
 
 4. **Update Bicep param file**:
-    Edit the `azure-ai.bicepparam` file to update the parameters:
+    Edit the `main-local.bicepparam` file to update the parameters for your environment:
 
     ```
-    param aiHubName = 'demo' // e.g 'azure-ai-7uj23hng7h22c-westus'. Leave it blank create a new AI resource with a random UUID.
+    param aiHubName = 'demo' // e.g 'azure-ai-7uj23hng7h22c-westus'. If left blank a new AI resource with a random UUID will be created.
     param aiHubFriendlyName = 'Demo AI resource'
     param aiHubDescription = 'This is an example AI resource for use in Azure AI Studio.'
     param tags = {}
@@ -114,7 +115,7 @@ Follow these steps to log into your Azure account using the Azure CLI.
     param vnetRgName = 'your-vnet-resource-group'
     param subnetName = 'your-subnet-name'
     param location = 'your-location'
-    param prefix = 'prefix'
+    param prefix = 'prefix' // your prefix will be used to name some of the services and endpoints
 
 
     param blobPrivateDnsZoneRg = 'aml-rg'
@@ -156,7 +157,7 @@ Follow these steps to log into your Azure account using the Azure CLI.
 
 5. **Test Azure AI resource Endpoint**:
 
-    For a local testing without DNS forwarding, add the above DNS name and IP address to hosts file and run the below script. 
+    For a local testing without DNS forwarding, add the above DNS name and IP address to hosts file and run the below script (e.g, /etc/hosts). 
     The below scripts initiates a chatbot converation with the deployed Azure AI resource using promptflow CLI. 
 
     Make sure you have conda installed and conda environment is created.
@@ -164,7 +165,7 @@ Follow these steps to log into your Azure account using the Azure CLI.
     ```
       cd azure-openai-landing-zone/foundation/aistudio-infra/tests
       conda activate <your conda env name>
-      pip install -r requirements.txt
+      pip install -r ./../scripts/requirements.txt
       ```
 
       ```
