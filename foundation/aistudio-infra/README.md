@@ -55,7 +55,7 @@ should already have virtual network links to the VNet.
 
     ```
 - **Resource Group Names**: Know the resource group names for your VNet and private DNS zones.
-- **Linux Environment**: If you are using a Linux environment to deploy see this [link](scripts/linux-env-setup.txt).
+- **Linux Environment**: If you are using a Linux environment to deploy see this [link](./linux-env-setup.md).
 - **Azure CLI**: The Azure Command Line Interface (CLI) should be installed on your system.
 - **Bash**: Ensure you have PowerShell (for Windows) or Bash (for Linux/Mac) installed.
 - **Jq**: The [jq utility](https://jqlang.github.io/jq/download/) should be installed on your system.
