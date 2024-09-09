@@ -8,7 +8,8 @@
     ],
     "responseOverrides": {
       "401": {
-        "redirect": "/.auth/login/aad?post_login_redirect_uri=/",
+        "comment": "Redirect to GitHub login, you can use aad instead of github for Azure AD",
+        "redirect": "/.auth/login/github?post_login_redirect_uri=/",
         "statusCode": 302
       }
     },
