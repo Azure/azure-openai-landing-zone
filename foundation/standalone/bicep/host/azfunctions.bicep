@@ -54,6 +54,26 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   properties: {
     supportsHttpsTrafficOnly: true
     defaultToOAuthAuthentication: true
+    encryption: {
+      services: {
+        blob: {
+          enabled: true
+        }
+        file: {
+          enabled: true
+        }
+        table: {
+          enabled: true
+        }
+        queue: {
+          enabled: true
+        }
+      }
+      keySource: 'Microsoft.Storage'
+      requireInfrastructureEncryption: true // Infrastructure encryption required by policy
+    }
+    allowBlobPublicAccess: false // Disallow public blob access as required by policy 
+    minimumTlsVersion: 'TLS1_2'   // Minimum TLS version required by policy
   }
 }
 

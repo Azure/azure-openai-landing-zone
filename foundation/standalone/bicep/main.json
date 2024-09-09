@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "8038442314109452612"
+      "templateHash": "7774487979405363163"
     }
   },
   "parameters": {
@@ -1709,7 +1709,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "17807131020643775281"
+              "templateHash": "4473612154702519435"
             }
           },
           "parameters": {
@@ -1830,7 +1830,27 @@
               "kind": "Storage",
               "properties": {
                 "supportsHttpsTrafficOnly": true,
-                "defaultToOAuthAuthentication": true
+                "defaultToOAuthAuthentication": true,
+                "encryption": {
+                  "services": {
+                    "blob": {
+                      "enabled": true
+                    },
+                    "file": {
+                      "enabled": true
+                    },
+                    "table": {
+                      "enabled": true
+                    },
+                    "queue": {
+                      "enabled": true
+                    }
+                  },
+                  "keySource": "Microsoft.Storage",
+                  "requireInfrastructureEncryption": true
+                },
+                "allowBlobPublicAccess": false,
+                "minimumTlsVersion": "TLS1_2"
               }
             },
             {
