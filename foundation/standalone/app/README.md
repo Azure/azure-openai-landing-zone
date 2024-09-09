@@ -20,6 +20,8 @@ This is based on the following repository: https://github.com/lordlinus/Enterpri
 
 Ensure your Azure Account has the necessary permissions (`Microsoft.Authorization/roleAssignments/write`) like User Access Administrator or Owner.
 
+You can find scripts to install all this pre-requisites using powershell and chocolatey in the folder  foundation\standalone\prerequisites
+
 ## Backend Deployment
 
 The backend of this application consists of Azure Functions, which are deployed using the Azure Functions Core Tools.
