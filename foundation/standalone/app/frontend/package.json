@@ -20,6 +20,7 @@
     "react-router-dom": "^6.8.1"
   },
   "devDependencies": {
+    "@azure/static-web-apps-cli": "^2.0.1",
     "@types/dompurify": "^2.4.0",
     "@types/node": "^18.15.11",
     "@types/react": "^18.0.28",
