@@ -13,10 +13,8 @@ from .approach import Approach
 # (answer) with that prompt.
 class ChatReadRetrieveReadApproach(Approach):
     prompt_prefix = """
-<|im_start|>system
 You are a virtual assistant. Be brief in your answers.
 For tabular information return it as an html table. Do not return markdown format.
-<|im_end|>
 {chat_history}
 """
     query_prompt_template = """Below is a history of the conversation so far, if it is empty just ignore it.

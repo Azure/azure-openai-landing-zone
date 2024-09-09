@@ -12,10 +12,8 @@ from .approach import Approach
 class RetrieveThenReadApproach(Approach):
 
     template = """
-<|im_start|>system
 You are a virtual assistant. Be brief in your answers.
 For tabular information return it as an html table. Do not return markdown format.
-<|im_end|>
 """
 
     def __init__(self, search_client: SearchClient, openai_deployment: str, sourcepage_field: str, content_field: str):

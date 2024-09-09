@@ -31,10 +31,9 @@ class ReadRetrieveReadApproach(Approach):
 # "\n\nYou can access to the following tools:"
 
     template_prefix = """
-        <|im_start|>system
         You are a virtual assistant. Be brief in your answers. 
         For tabular information return it as an html table. Do not return markdown format.
-        <|im_end|>"""
+        """
 
 
     template_suffix = """
