@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "2087934947853649226"
+      "version": "0.29.47.4906",
+      "templateHash": "8038442314109452612"
     }
   },
   "parameters": {
@@ -36,6 +36,10 @@
     "globalName": {
       "type": "string",
       "defaultValue": "oai-standalone"
+    },
+    "tempBastionPassword": {
+      "type": "securestring",
+      "defaultValue": ""
     },
     "vnet_name": {
       "type": "string",
@@ -236,8 +240,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "15229642441970915601"
+              "version": "0.29.47.4906",
+              "templateHash": "4726305413826950932"
             }
           },
           "parameters": {
@@ -361,59 +365,6 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "passwordGeneratorDeployment",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "5340915888100387596"
-            }
-          },
-          "parameters": {
-            "location": {
-              "type": "string"
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.Resources/deploymentScripts",
-              "apiVersion": "2020-10-01",
-              "name": "passwordGeneratorScript",
-              "location": "[parameters('location')]",
-              "kind": "AzurePowerShell",
-              "properties": {
-                "azPowerShellVersion": "3.0",
-                "scriptContent": "  function Get-RandomPassword {\r\n    param (\r\n    [Parameter(Mandatory)]\r\n    [ValidateRange(4,[int]::MaxValue)]\r\n    [int] $length,\r\n    [int] $upper = 1,\r\n    [int] $lower = 1,\r\n    [int] $numeric = 1,\r\n    [int] $special = 1\r\n    )\r\n    \r\n    if($upper + $lower + $numeric + $special -gt $length) {\r\n    throw \"number of upper/lower/numeric/special char must be lower or equal to length\"\r\n    }\r\n    \r\n    $uCharSet = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"\r\n    $lCharSet = \"abcdefghijklmnopqrstuvwxyz\"\r\n    $nCharSet = \"0123456789\"\r\n    $sCharSet = \"/*-+,!?=()@;:._\"\r\n    $charSet = \"\"\r\n    \r\n    if($upper -gt 0) { $charSet += $uCharSet }\r\n    if($lower -gt 0) { $charSet += $lCharSet }\r\n    if($numeric -gt 0) { $charSet += $nCharSet }\r\n    if($special -gt 0) { $charSet += $sCharSet }\r\n    \r\n    $charSet = $charSet.ToCharArray()\r\n    \r\n    $rng = New-Object System.Security.Cryptography.RNGCryptoServiceProvider\r\n    $bytes = New-Object byte[]($length)\r\n    $rng.GetBytes($bytes)\r\n    \r\n    $result = New-Object char[]($length)\r\n    for ($i = 0 ; $i -lt $length ; $i++) {\r\n    $result[$i] = $charSet[$bytes[$i] % $charSet.Length]\r\n    }\r\n    $password = (-join $result)\r\n    \r\n    $valid = $true\r\n    if($upper -gt ($password.ToCharArray() | Where-Object {$_ -cin $uCharSet.ToCharArray() }).Count) { $valid = $false }\r\n    if($lower -gt ($password.ToCharArray() | Where-Object {$_ -cin $lCharSet.ToCharArray() }).Count) { $valid = $false }\r\n    if($numeric -gt ($password.ToCharArray() | Where-Object {$_ -cin $nCharSet.ToCharArray() }).Count) { $valid = $false }\r\n    if($special -gt ($password.ToCharArray() | Where-Object {$_ -cin $sCharSet.ToCharArray() }).Count) { $valid = $false }\r\n    \r\n    if(!$valid) {\r\n    $password = Get-RandomPassword $length $upper $lower $numeric $special\r\n    }\r\n    \r\n    return $password\r\n    }\r\n    # Generate a secure random password\r\n    $output = RandomPassword 16\r\n    Write-Output $output\r\n    $DeploymentScriptOutputs = @{}\r\n    $DeploymentScriptOutputs['output'] = $output\r\n    ",
-                "cleanupPreference": "OnSuccess",
-                "retentionInterval": "P1D"
-              }
-            }
-          ],
-          "outputs": {
-            "generatedPassword": {
-              "type": "string",
-              "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', 'passwordGeneratorScript'), '2020-10-01').outputs.output]"
-            }
-          }
-        }
-      }
-    },
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
       "name": "bastionDeployment",
       "properties": {
         "expressionEvaluationOptions": {
@@ -431,7 +382,7 @@
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnetnDeployment'), '2022-09-01').outputs.subnets.value[3].id]"
           },
           "adminPassword": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'passwordGeneratorDeployment'), '2022-09-01').outputs.generatedPassword.value]"
+            "value": "[parameters('tempBastionPassword')]"
           }
         },
         "template": {
@@ -440,8 +391,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "10566836215221712621"
+              "version": "0.29.47.4906",
+              "templateHash": "10681104787660590719"
             }
           },
           "parameters": {
@@ -564,7 +515,6 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'passwordGeneratorDeployment')]",
         "[resourceId('Microsoft.Resources/deployments', 'vnetnDeployment')]"
       ]
     },
@@ -600,8 +550,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "1683682338506249645"
+              "version": "0.29.47.4906",
+              "templateHash": "9106277529090712347"
             }
           },
           "parameters": {
@@ -794,8 +744,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "18241010893362701060"
+              "version": "0.29.47.4906",
+              "templateHash": "10892810748835614027"
             }
           },
           "parameters": {
@@ -993,8 +943,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "8395638561608813652"
+              "version": "0.29.47.4906",
+              "templateHash": "17257426056515407006"
             }
           },
           "parameters": {
@@ -1204,8 +1154,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "8395638561608813652"
+              "version": "0.29.47.4906",
+              "templateHash": "17257426056515407006"
             }
           },
           "parameters": {
@@ -1405,8 +1355,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "4147397717757448614"
+              "version": "0.29.47.4906",
+              "templateHash": "2563184145208215987"
             }
           },
           "parameters": {
@@ -1518,7 +1468,23 @@
               "sku": {
                 "name": "Standard_LRS"
               },
-              "kind": "StorageV2"
+              "kind": "StorageV2",
+              "properties": {
+                "encryption": {
+                  "services": {
+                    "blob": {
+                      "enabled": true
+                    },
+                    "file": {
+                      "enabled": true
+                    }
+                  },
+                  "keySource": "Microsoft.Storage",
+                  "requireInfrastructureEncryption": true
+                },
+                "allowBlobPublicAccess": false,
+                "minimumTlsVersion": "TLS1_2"
+              }
             },
             {
               "type": "Microsoft.Network/privateDnsZones",
@@ -1631,8 +1597,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "1383011993056626523"
+              "version": "0.29.47.4906",
+              "templateHash": "15068429096994412860"
             }
           },
           "parameters": {
@@ -1742,8 +1708,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "10522082744354194601"
+              "version": "0.29.47.4906",
+              "templateHash": "17807131020643775281"
             }
           },
           "parameters": {
@@ -2061,8 +2027,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "12426968112754905763"
+              "version": "0.29.47.4906",
+              "templateHash": "2523913532472577694"
             }
           },
           "parameters": {
@@ -2153,8 +2119,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "10435747747227812492"
+              "version": "0.29.47.4906",
+              "templateHash": "12784384008674832516"
             }
           },
           "parameters": {

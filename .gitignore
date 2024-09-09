@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Azure az webapp deployment details
 .azure
 *_env
@@ -149,7 +148,6 @@ node_modules
 static/
 foundation/aistudio-infra/bicep/azure-ai-local.bicepparam
 foundation/aistudio-infra/bicep/azure-ai-project-local.bicepparam
-=======
 # Azure az webapp deployment details
 .azure
 *_env
@@ -335,4 +333,4 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
->>>>>>> 3a685379491b031fe2622bcd45a8a0ba28cce1aa
+foundation/standalone/app/frontend/package-lock.json

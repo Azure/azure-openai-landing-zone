@@ -15,7 +15,8 @@ param locationOpenAI string = 'canadaeast'
 param env string = 'dev'
 param postFix string = '-02'
 param globalName string ='oai-standalone'
-
+@secure()
+param tempBastionPassword  string =''
 
 /*
   The address prefixes defined above represent the IP address ranges for different subnets in the virtual network used by each service.
@@ -106,12 +107,14 @@ module vnet './core/vnet.bicep' = {
   }
 }
 
-module passwordGeneratorModule './security/password-generator.bicep' = {
+/*module passwordGeneratorModule './security/password-generator.bicep' = {
   name: 'passwordGeneratorDeployment'
   params: {
     location: location
   }
-}
+}*/
+ 
+
 
 module bastion './security/bastion.bicep' = {
   name: 'bastionDeployment'
@@ -119,7 +122,7 @@ module bastion './security/bastion.bicep' = {
     location: location 
     bastion_subnet_id: vnet.outputs.subnets[2].id
     jumpbox_subnet_id: vnet.outputs.subnets[3].id
-    adminPassword: passwordGeneratorModule.outputs.generatedPassword
+    adminPassword: tempBastionPassword
   }
 }
 

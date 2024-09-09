@@ -118,6 +118,9 @@
     },
     "staticWebsiteName": {
       "value": "swa-aoai-standalone-dev-02"
+    },
+    "tempBastionPassword": {
+      "value": "P@ssw0rd1234"
     }
   }
 }

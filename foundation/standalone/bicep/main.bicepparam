@@ -49,3 +49,5 @@ param  storageEndpointDocumentIntelligenceName    = 'pe-storage-${env}${postFix}
 param appServicePlanName  = 'asp-03-${env}${postFix}'
 param azFunctionName  = 'afn-${globalName}-${env}${postFix}'
 param staticWebsiteName  = 'swa-${globalName}-${env}${postFix}'
+
+param tempBastionPassword  = 'P@ssw0rd1234'

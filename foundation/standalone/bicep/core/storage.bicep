@@ -24,7 +24,7 @@ param subnetId string
 @secure()
 param privateEndpointName string
 
-param vnetId string 
+param vnetId string
 
 // Resources
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
@@ -35,7 +35,23 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
     name: 'Standard_LRS'
   }
   kind: 'StorageV2'
-  
+  properties: {
+    encryption: {
+      services: {
+        blob: {
+          enabled: true
+        }
+
+        file: {
+          enabled: true
+        }
+      }
+      keySource: 'Microsoft.Storage'
+      requireInfrastructureEncryption: true
+    }
+    allowBlobPublicAccess: false
+    minimumTlsVersion: 'TLS1_2'
+  }
   // Containers live inside of a blob service
   resource blobService 'blobServices' = {
     name: 'default'
