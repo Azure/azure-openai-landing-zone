@@ -81,7 +81,7 @@ Question:
             else:
                 prompt = prompt_override.format(sources=content, chat_history=self.get_chat_history_as_text(history), follow_up_questions_prompt=follow_up_questions_prompt)  
        
-        except HttpResponseError as e:
+        except Exception as e:
             if e.status_code == 404:  # Status code for 'Not Found', which may indicate missing index
                 logging.error(f"Search index not found: {e}")
             else:
