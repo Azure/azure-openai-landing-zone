@@ -13,8 +13,10 @@ from .approach import Approach
 # (answer) with that prompt.
 class ChatReadRetrieveReadApproach(Approach):
     prompt_prefix = """
-You are a virtual assistant. Be brief in your answers.
-For tabular information return it as an html table. Do not return markdown format.
+system:
+    You are a virtual assistant. Be brief in your answers.
+    For tabular information return it as an html table. Do not return markdown format.
+user:
 {chat_history}
 """
     query_prompt_template = """Below is a history of the conversation so far, if it is empty just ignore it.
@@ -100,7 +102,9 @@ Question:
     def get_chat_history_as_text(self, history, include_last_turn=True, approx_max_tokens=1000) -> str:
         history_text = ""
         for h in reversed(history if include_last_turn else history[:-1]):
-            history_text = """<|im_start|>user""" +"\n" + h["user"] + "\n" + """<|im_end|>""" + "\n" + """<|im_start|>assistant""" + "\n" + (h.get("bot") + """<|im_end|>""" if h.get("bot") else "") + "\n" + history_text
+            # Add user and assistant turns to the history text without special tokens
+            history_text = "User: " + h["user"] + "\n" + "Assistant: " + (h.get("bot") if h.get("bot") else "") + "\n" + history_text
+            # Check the token length and break if it exceeds approx_max_tokens
             if len(history_text) > approx_max_tokens*4:
-                break    
-        return history_text
+                break
+        return history_text.strip()  # Remove any trailing newline characters
