@@ -47,6 +47,7 @@ const FileUploader: React.FC = () => {
           { success: false, message: e.message },
         ]);
         alert("Upload failed!");
+        console.error(e);
       }
       setIsUploading(false);
       setUploadStatus((prevStatus) => [
