@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "7774487979405363163"
+      "templateHash": "8318044780697168876"
     }
   },
   "parameters": {
@@ -1709,7 +1709,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "4473612154702519435"
+              "templateHash": "320696951090410244"
             }
           },
           "parameters": {
@@ -1827,7 +1827,7 @@
               "sku": {
                 "name": "[parameters('storageAccountType')]"
               },
-              "kind": "Storage",
+              "kind": "StorageV2",
               "properties": {
                 "supportsHttpsTrafficOnly": true,
                 "defaultToOAuthAuthentication": true,
