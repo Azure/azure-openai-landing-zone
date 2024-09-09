@@ -1,5 +1,5 @@
 import logging
-
+from azure.core.exceptions import HttpResponseError
 from azure.search.documents import SearchClient
 from azure.search.documents.models import QueryType
 
@@ -50,37 +50,48 @@ Question:
         logging.info(f"Generated search query: {q}")
         results=[]
         
-        # STEP 2: Retrieve relevant documents from the search index with the GPT optimized query
-        if overrides.get("semantic_ranker"):
-            r = search_client.search(q, 
-                                        filter=filter,
-                                        query_type=QueryType.SEMANTIC, 
-                                        query_language="en-us", 
-                                        query_speller="lexicon", 
-                                        semantic_configuration_name="default", 
-                                        top=top, 
-                                        query_caption="extractive|highlight-false" if use_semantic_captions else None)
-        else:
-            r = search_client.search(q, filter=filter, top=top)
+        try:
+            # STEP 2: Retrieve relevant documents from the search index with the GPT optimized query
+            if overrides.get("semantic_ranker"):
+                r = search_client.search(q, 
+                                            filter=filter,
+                                            query_type=QueryType.SEMANTIC, 
+                                            query_language="en-us", 
+                                            query_speller="lexicon", 
+                                            semantic_configuration_name="default", 
+                                            top=top, 
+                                            query_caption="extractive|highlight-false" if use_semantic_captions else None)
+            else:
+                r = search_client.search(q, filter=filter, top=top)
 
-        if use_semantic_captions:
-            results = [doc[self.sourcepage_field] + ": " + nonewlines(" . ".join([c.text for c in doc['@search.captions']])) for doc in r]
-        else:
-            results = [doc[self.sourcepage_field] + ": " + nonewlines(doc[self.content_field]) for doc in r]
-        content = "\n".join(results)
+            if use_semantic_captions:
+                results = [doc[self.sourcepage_field] + ": " + nonewlines(" . ".join([c.text for c in doc['@search.captions']])) for doc in r]
+            else:
+                results = [doc[self.sourcepage_field] + ": " + nonewlines(doc[self.content_field]) for doc in r]
+            content = "\n".join(results)
 
-        follow_up_questions_prompt = self.follow_up_questions_prompt_content if overrides.get("suggest_followup_questions") else ""
-        
-        # Allow client to replace the entire prompt, or to inject into the exiting prompt using >>>
-        prompt_override = overrides.get("prompt_template")
-        if prompt_override is None:
-            prompt = self.prompt_prefix.format(injected_prompt="", sources=content, chat_history=self.get_chat_history_as_text(history), follow_up_questions_prompt=follow_up_questions_prompt)
-        elif prompt_override.startswith(">>>"):
-            prompt = self.prompt_prefix.format(injected_prompt=prompt_override[3:] + "\n", sources=content, chat_history=self.get_chat_history_as_text(history), follow_up_questions_prompt=follow_up_questions_prompt)
-        else:
-            prompt = prompt_override.format(sources=content, chat_history=self.get_chat_history_as_text(history), follow_up_questions_prompt=follow_up_questions_prompt)
-        
-        
+            follow_up_questions_prompt = self.follow_up_questions_prompt_content if overrides.get("suggest_followup_questions") else ""
+            
+            # Allow client to replace the entire prompt, or to inject into the exiting prompt using >>>
+            prompt_override = overrides.get("prompt_template")
+            if prompt_override is None:
+                prompt = self.prompt_prefix.format(injected_prompt="", sources=content, chat_history=self.get_chat_history_as_text(history), follow_up_questions_prompt=follow_up_questions_prompt)
+            elif prompt_override.startswith(">>>"):
+                prompt = self.prompt_prefix.format(injected_prompt=prompt_override[3:] + "\n", sources=content, chat_history=self.get_chat_history_as_text(history), follow_up_questions_prompt=follow_up_questions_prompt)
+            else:
+                prompt = prompt_override.format(sources=content, chat_history=self.get_chat_history_as_text(history), follow_up_questions_prompt=follow_up_questions_prompt)  
+       
+        except HttpResponseError as e:
+            if e.status_code == 404:  # Status code for 'Not Found', which may indicate missing index
+                logging.error(f"Search index not found: {e}")
+            else:
+                logging.error(f"Search encountered an error: {e}")
+            # Assume no results if index is missing or another error occurred
+            results = []
+
+            # You can also set the content to a default message if needed
+            content = "No relevant documents found. Proceeding with completion."
+            
         # STEP 3: Generate a contextual and content specific answer using the search results and chat history
         completion = completion_client(prompt=prompt, max_tokens=1024, temperature=overrides.get("temperature") or 0, n=1, stop=["<|im_end|>", "<|im_start|>"], deployment_name=self.chatgpt_deployment)
 
