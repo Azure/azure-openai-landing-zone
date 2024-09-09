@@ -80,5 +80,17 @@ fi
 
 
 
+print_status "Assigning Cognitive Services OpenAI Contributor role to the current user..."
+
+user_email=$(az account show | jq -r .user.name)
+
+currentUserObjectId=$(az ad user show --id $user_email | jq -r .id)
+
+ai_service_name=$(az resource list -g $RESOURCE_GROUP_NAME -l $LOCATION  --resource-type "Microsoft.CognitiveServices/accounts" | jq -r .[].name)
+
+resourceId=$(az resource show --resource-group $RESOURCE_GROUP_NAME --resource-type "Microsoft.CognitiveServices/accounts" --name $ai_service_name  --query id -o tsv)
+
+az role assignment create --assignee $currentUserObjectId --role "Cognitive Services OpenAI Contributor" --scope $resourceId
 
 
+print_status "Cognitive Services OpenAI Contributor role assigned to the current user successfully."

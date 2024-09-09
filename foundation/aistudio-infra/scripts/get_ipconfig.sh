@@ -6,19 +6,17 @@ LOCATION=$2
 HUB_DNS_NAME="workspace.$LOCATION.api.azureml.ms"
 HUB_IP=""
 
-
-storge_blob_pe_name="ple-$SUFFIX-$UNIQUE_SUFFIX-st-blob"
-storge_file_pe_name="ple-$SUFFIX-$UNIQUE_SUFFIX-st-file"
-acr_pe_name="ple-$SUFFIX-$UNIQUE_SUFFIX-cr"
-akv_pe_name="ple-$SUFFIX-$UNIQUE_SUFFIX-kv"
-
-
 while [ -z "${RESOURCE_GROUP_NAME}" ]
 do
     echo "Please provide resource group name:"
     read RESOURCE_GROUP_NAME
 done
 
+while [ -z "${LOCATION}" ]
+do
+    echo "Please provide location. e.g westus, northcentralus:"
+    read LOCATION
+done
 
 for ai_resource_name in $(az resource list -g $RESOURCE_GROUP_NAME -l $LOCATION --query "[?kind=='Hub']" | jq -r .[].name); do
     ai_hub_pe_name="$ai_resource_name-AIHub-PE"

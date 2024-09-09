@@ -10,9 +10,9 @@ print_warning() {
 
 RESOURCE_GROUP_NAME=$1
 
-CONDA_ENV_NAME="aoai-landingzone"
-source ~/miniconda3/etc/profile.d/conda.sh
-conda activate $CONDA_ENV_NAME
+#CONDA_ENV_NAME="aoai-landingzone"
+#source ~/miniconda3/etc/profile.d/conda.sh
+#conda activate $CONDA_ENV_NAME
 
 
 while [ -z "${RESOURCE_GROUP_NAME}" ]
@@ -38,7 +38,8 @@ ai_service_deployment_name=$(az cognitiveservices account deployment list --name
 sed -i "/deployment_name:/s|.*|    deployment_name: $ai_service_deployment_name |" ./pftest_chatbot/flow.dag.yaml
 
 
-pf connection create --file ./pftest_chatbot/azure_openai.yaml --set api_key=$ai_service_key api_base=$api_base --name open_ai_connection
+#pf connection create --file ./pftest_chatbot/azure_openai.yaml --set api_key=$ai_service_key api_base=$api_base --name open_ai_connection
+pf connection create --file ./pftest_chatbot/azure_ai_services.yaml --set api_base=$api_base --name open_ai_connection
 pf flow test --flow ./pftest_chatbot --interactive
 
 
