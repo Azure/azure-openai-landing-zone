@@ -28,6 +28,13 @@ choco install git -y
 
 Invoke-WebRequest -Uri https://aka.ms/installazurecliwindowsx64 -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; Remove-Item .\AzureCLI.msi
 
+# Add Azure CLI to the system PATH environment variable
+
+$azureCliPath = "C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin"
+$env:Path += ";$azureCliPath"
+[System.Environment]::SetEnvironmentVariable('Path', $env:Path, [System.EnvironmentVariableTarget]::Machine)
+
+
 # Add Git to the system PATH environment variable
 $gitPath = "C:\Program Files\Git\cmd"
 $env:Path += ";$gitPath"
