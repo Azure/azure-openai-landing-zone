@@ -9,9 +9,6 @@ RefreshEnv.cmd
 # Install Azure Functions Core Tools using Chocolatey
 choco install azure-functions-core-tools -y
 
-# Install Azure CLI using Chocolatey
-choco install azure-cli -y
-
 # Install PowerShell 7 using Chocolatey
 choco install powershell-core -y
 
@@ -26,6 +23,8 @@ choco install vscode -y
 
 # Install Git using Chocolatey, which includes Git Bash
 choco install git -y
+
+$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; Remove-Item .\AzureCLI.msi
 
 # Add Git to the system PATH environment variable
 $gitPath = "C:\Program Files\Git\cmd"
