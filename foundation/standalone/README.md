@@ -123,6 +123,7 @@ Remember to monitor the resource usage and costs associated with this deployment
 17. Navigate to the "Index your data" section of the application and attempt to upload a PDF file or any other file type supported by your application.
 18. Ensure all necessary environment variables and settings are correctly configured for both the backend and frontend.
 19. Test the entire application workflow end-to-end to confirm that all components are functioning together as expected.
+20. You can use the example pdf files in the path foundation\standalone\app\test_document to test text indexation.
 
 ## Additional Notes
 
