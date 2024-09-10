@@ -99,7 +99,7 @@ Remember to monitor the resource usage and costs associated with this deployment
 
 ### Manual Installation Scripts Execution on VM or Local Environment
 3. Clone or download this repository to your local environment or VM if you have not done so yet.
-4. Execute `1.InstallDotNetFramework.ps1` to install the necessary .NET Framework components. If you are executing this in the jumpbox using Azure Bastion you can just copy paste the commands into a powershell after connecting to the VM. 
+4. Execute `1.InstallDotNetFramework.ps1` to install the necessary .NET Framework components. If you are executing this in the jumpbox using Azure Bastion you can just copy paste the commands into a powershell after connecting to the VM or just right click on the script => Run with powershell, we suggest you to unblock all the downloaded files (right click, properties, unblock). 
 5. Run `2.InstallNode.ps1` to install Node.js, which may be used by the frontend application. Reboot the system (VM or Local Environment) to ensure the installations take effect.
 6. Post-reboot, run `3.InstallAdditionalSoftware.ps1` to install any remaining required software such as the Azure CLI, Azure Functions Core Tools, Python, or others that the scripts cover.
 
@@ -129,5 +129,6 @@ Remember to monitor the resource usage and costs associated with this deployment
 -   **Monitoring and Management**: Set up Azure Monitor and Azure Alerts to keep track of any issues and to monitor the performance and health of the application.
 -   **Backups**: Consider implementing a backup strategy for resources like Azure Blob Storage to prevent data loss.
 
-By carefully following these steps, you should now have a secure and scalable Azure OpenAI-powered search and question-answering platform.
+
+### By carefully following these steps, you should now have a secure and scalable Azure OpenAI-powered search and question-answering platform.
 =======
