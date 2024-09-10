@@ -90,6 +90,39 @@ Once both the infrastructure and the application deployments are complete, you s
 
 Remember to monitor the resource usage and costs associated with this deployment, as some components like Azure OpenAI may incur higher charges.
 
+## 5. Recap of step by step installation
+
+### Initial Infrastructure Deployment
+1. Use the "Deploy to Azure" button to initiate the infrastructure deployment through a pre-configured ARM or Bicep template.
+2. Monitor the deployment progress in the Azure portal and confirm the successful creation of the resources.
+
+
+### Manual Installation Scripts Execution on VM or Local Environment
+3. Clone or download this repository to your local environment or VM if you have not done so yet.
+4. Execute `1.InstallDotNetFramework.ps1` to install the necessary .NET Framework components. If you are executing this in the jumpbox using Azure Bastion you can just copy paste the commands into a powershell after connecting to the VM. 
+5. Run `2.InstallNode.ps1` to install Node.js, which may be used by the frontend application. Reboot the system (VM or Local Environment) to ensure the installations take effect.
+6. Post-reboot, run `3.InstallAdditionalSoftware.ps1` to install any remaining required software such as the Azure CLI, Azure Functions Core Tools, Python, or others that the scripts cover.
+
+### Post-Installation Steps
+7. Use `az login --use-device-code` to authenticate to Azure if the default browser-based login is not suitable for your environment.
+
+### Backend Deployment
+9. Navigate to the backend folder of your project in the terminal.
+10. Set your Azure subscription by executing `az account set --subscription "subscription-id"`.
+11. Publish your backend Azure Functions with the command: `func azure functionapp publish FunctionAppName --python`, replacing `FunctionAppName` with the correct name.
+
+### Frontend Deployment
+12. Navigate to the frontend directory in your project.
+13. Install frontend dependencies by running `npm install`.
+14. Build your frontend application with `npm run build`.
+15. Deploy your built frontend to Azure Static Web Apps with the command `swa deploy --env production --deployment-token your_deployment_token`.
+
+### Final Steps for Application Readiness
+16. After deployment, access the Static Web App URL to verify that your application is running.
+17. Navigate to the "Index your data" section of the application and attempt to upload a PDF file or any other file type supported by your application.
+18. Ensure all necessary environment variables and settings are correctly configured for both the backend and frontend.
+19. Test the entire application workflow end-to-end to confirm that all components are functioning together as expected.
+
 ## Additional Notes
 
 -   **Security**: Review the security settings for all used resources, and ensure that access control is correctly configured.
