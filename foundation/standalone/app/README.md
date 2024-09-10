@@ -71,7 +71,7 @@ The frontend is a Static Web App (SWA) and can be deployed using the SWA CLI.
 -   **Application Insights**: To debug issues in your Azure Functions, enable Application Insights and make sure all environment configurations are correct.
 -   **Resource Costs**: Be aware of the potential costs associated with Azure resources used. You can opt for free versions where applicable, but take note of their limitations.
 
-After deploying both the frontend and backend, you should be able to access the application through the URL provided at the completion of the deployment process or through the Azure portal.`enter code here`
+After deploying both the frontend and backend, you should be able to access the application through the URL provided at the completion of the deployment process or through the Azure portal.
 =======
 
 # Readme for Deploying ChatGPT + Enterprise Data with Azure OpenAI
