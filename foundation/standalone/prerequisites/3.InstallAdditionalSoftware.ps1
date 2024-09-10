@@ -43,3 +43,6 @@ pwsh --version
 python --version
 & "C:\Program Files\Microsoft VS Code\bin\code" --version
 git --version
+
+# Reboot the system to ensure changes take effect
+Restart-Computer
