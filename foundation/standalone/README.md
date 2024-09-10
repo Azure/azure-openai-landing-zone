@@ -100,7 +100,8 @@ Remember to monitor the resource usage and costs associated with this deployment
 ### Manual Installation Scripts Execution on VM or Local Environment
 3. Connect to bastion using the user "azureadmin" and the password you have defined in the the template "tempBastionPassword" parameter.
 3. Download this repository to your local environment or VM if you have not done so yet.
-4. Execute `1.InstallDotNetFramework.ps1` to install the necessary .NET Framework components. Just right click on the script => Run with powershell. 
+4. Scripts to install the pre requisites can be found in the folder: C:\Users\freddyayala\Documents\GitHub\azure-openai-landing-zone\foundation\standalone\prerequisites 
+4. Execute the `1.InstallDotNetFramework.ps1` to install the necessary .NET Framework components. Just right click on the script => Run with powershell. 
 5. Run `2.InstallNode.ps1` to install Node.js, which may be used by the frontend application. Reboot the system (VM or Local Environment) to ensure the installations take effect.
 6. Post-reboot, run `3.InstallAdditionalSoftware.ps1` to install any remaining required software such as the Azure CLI, Azure Functions Core Tools, Python, or others that the scripts cover.
 
