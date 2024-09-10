@@ -39,6 +39,7 @@ const FileUploader: React.FC = () => {
       setIsUploading(false);
       setFiles([]);
       console.log(responseData);
+      alert("Upload successful!");
     } catch (error: unknown) {
       if (error instanceof Error) {
         const e: Error = error;
