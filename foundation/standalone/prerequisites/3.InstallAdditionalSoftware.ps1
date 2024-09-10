@@ -39,7 +39,6 @@ RefreshEnv.cmd
 node --version
 npm --version
 func --version
-az --version
 pwsh --version
 python --version
 & "C:\Program Files\Microsoft VS Code\bin\code" --version
