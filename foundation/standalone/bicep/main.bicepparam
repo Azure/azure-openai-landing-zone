@@ -5,8 +5,8 @@ param locationFomsRecogniser  ='canadacentral'
 param locationStaticWebApp  ='westus2'
 param locationOpenAI  = 'canadaeast'
 param env  = 'dev'
-param postFix  = '-02'
-param globalName ='aoai-standalone'
+param postFix  = '-97'
+param globalName ='aoai-standhd'
 
 
 param vnet_name  = 'vnet-ai-standalone${postFix}'
@@ -28,7 +28,7 @@ param embeddingDeploymentCapacity  =5
 
 param searchServiceName  = 'ais-${globalName}-${env}${postFix}'
 param skuName  = 'basic'
-param privateEndpointName  =  'pv-search-oai-${env}${postFix}'
+param privateEndpointName  =  'pe-search-oai-${env}${postFix}'
 param privateDnsZoneNameSearch  = 'privatelink.search.windows.net'
 
 param keyvaultName  = 'kv-oai-standalone-${env}${postFix}'
