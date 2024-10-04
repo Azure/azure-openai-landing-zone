@@ -7,7 +7,7 @@
   - `locationStaticWebApp` parameter represents the location for Static Web App resources.
   - `locationOpenAI` parameter represents the location for OpenAI resources.
 */
-param location string = 'canadaeast'
+param location string = 'swedencentral' // 'canadaeast'
 param locationFomsRecogniser string = 'canadacentral'
 param locationStaticWebApp string = 'westus2'
 param locationOpenAI string = 'canadaeast'
@@ -69,7 +69,7 @@ param skuName string = 'basic'
 param privateEndpointName string = 'pv-search-oai-${env}${postFix}'
 param privateDnsZoneNameSearch string = 'privatelink.search.windows.net'
 
-param keyvaultName string = 'kv-${globalName}-${env}${postFix}'
+param keyvaultName string = 'kv${globalName}${env}${postFix}'
 param keyvaultPleName string = 'pv-kv-oai-${env}${postFix}'
 
 param privateEndpointOpenAIName string = 'pe-oai-${env}${postFix}'
@@ -173,7 +173,7 @@ var defaultOpenAiDeployments = [
 module privateEndpointOpenAIModule './ai/cognitive.bicep' = {
   name: 'PrivateEndpointOpenAIDeployment'
   params: {
-    location: location
+    location: locationOpenAI // location
     privateEndpointcognitiveName: privateEndpointOpenAIName
     subnet_id: vnet.outputs.subnets[1].id
     virtualNetworkId: vnet.outputs.id
@@ -182,7 +182,7 @@ module privateEndpointOpenAIModule './ai/cognitive.bicep' = {
     privateDnsZoneName: privateDnsZoneNameOpenAI
     kind: 'OpenAI'
     vnet_private_endpoint_subnet_id: vnet.outputs.subnets[1].id
-    vnetLocation: locationOpenAI
+    vnetLocation: location // locationOpenAI
     deployments: defaultOpenAiDeployments
   }
 }
