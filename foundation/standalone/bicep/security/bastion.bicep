@@ -1,7 +1,10 @@
 param location string
 param bastion_subnet_id string
 param jumpbox_subnet_id string
+
+@secure()
 param adminPassword string
+param adminUsername string
 
 resource bastionPublicIp 'Microsoft.Network/publicIPAddresses@2020-11-01' = {
   name: 'pip-bastion'
@@ -40,7 +43,7 @@ resource bastion 'Microsoft.Network/bastionHosts@2020-11-01' = {
 }
 
 resource nicJumpbox 'Microsoft.Network/networkInterfaces@2021-02-01' = {
-  name: 'nic-jumpbox'
+  name: 'nic-vm-jumpbox'
   location: location
   properties: {
     ipConfigurations: [
@@ -57,18 +60,20 @@ resource nicJumpbox 'Microsoft.Network/networkInterfaces@2021-02-01' = {
   }
 }
 
-resource vmJumpbox 'Microsoft.Compute/virtualMachines@2021-04-01' = {
+resource vmJumpbox 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   name: 'vm-jumpbox-win11'
   location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     hardwareProfile: {
       vmSize: 'Standard_D2s_v5' // 'Standard_B2ats_v2'
     }
     osProfile: {
-      computerName: 'jumpbox'
-      adminUsername: 'azureadmin'
+      adminUsername: adminUsername
       adminPassword: adminPassword
-      customData: base64('Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString("https://chocolatey.org/install.ps1")); choco install azure-cli -y')
+      // customData: base64('Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString("https://chocolatey.org/install.ps1")); choco install azure-cli -y')
       // customData: base64(loadFileAsBase64('./install-tools-windows.ps1') // base64('./install-tools-windows.ps1')
     }
     storageProfile: {
@@ -80,7 +85,7 @@ resource vmJumpbox 'Microsoft.Compute/virtualMachines@2021-04-01' = {
       }
       osDisk: {
         createOption: 'FromImage'
-        name: 'osdisk-jumpbox'
+        name: 'osdisk-vm-jumpbox'
         managedDisk: {
           storageAccountType: 'Standard_LRS'
         }
@@ -104,56 +109,36 @@ resource vmExtension 'Microsoft.Compute/virtualMachines/extensions@2024-07-01' =
   properties: {
     publisher: 'Microsoft.Compute'
     type: 'CustomScriptExtension'
-    typeHandlerVersion: '1.9'
+    typeHandlerVersion: '1.10'
     autoUpgradeMinorVersion: true
-    enableAutomaticUpgrade: true
     settings: {
       fileUris: [
-        'https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/101-vm-simple-windows/install-tools-windows.ps1'
+        'https://raw.githubusercontent.com/HoussemDellai/azure-openai-landing-zone/refs/heads/branch-houssem/foundation/standalone/bicep/security/install-tools-windows.ps1'
       ]
       commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File install-tools-windows.ps1'
     }
-    // settings: {
-    //   AttestationConfig: {
-    //     MaaSettings: {
-    //       maaEndpoint: maaEndpoint
-    //       maaTenantName: maaTenantName
-    //     }
-    //   }
-    // }
   }
 }
 
-// managed identity for the jumpbox
+resource vmUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: 'identity-vm-jumpbox'
+  location: location
+}
 
-// resource "azurerm_linux_virtual_machine" "vm-spoke1" {
-//   name                            = "vm-linux-spoke1"
-//   resource_group_name             = azurerm_resource_group.rg-spoke1.name
-//   location                        = azurerm_resource_group.rg-spoke1.location
-//   size                            = "Standard_B2ats_v2"
-//   disable_password_authentication = false
-//   admin_username                  = "azureuser"
-//   admin_password                  = "@Aa123456789"
-//   network_interface_ids           = [azurerm_network_interface.nic-vm-spoke1.id]
-//   priority                        = "Spot"
-//   eviction_policy                 = "Deallocate"
+var roleDefinitionIdVar = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
 
-//   custom_data = filebase64("./install-webapp.sh")
+resource contributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(roleDefinitionIdVar, resourceGroup().id)
+  scope: resourceGroup()
+  properties: {
+    // roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+    // roleDefinitionId: guid('8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+    // roleDefinitionId: guid('/subscriptions/dcef7009-6b94-4382-afdc-17eb160d709a/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+    // roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+    principalId: vmJumpbox.identity.principalId
+  }
+}
 
-//   os_disk {
-//     name                 = "os-disk-vm-spoke1"
-//     caching              = "ReadWrite"
-//     storage_account_type = "Standard_LRS"
-//   }
-
-//   source_image_reference {
-//     publisher = "canonical"
-//     offer     = "0001-com-ubuntu-server-jammy"
-//     sku       = "22_04-lts-gen2"
-//     version   = "latest"
-//   }
-
-//   boot_diagnostics {
-//     storage_account_uri = null
-//   }
-// }
+output name string = contributorRoleAssignment.name
+output resourceId string = contributorRoleAssignment.id

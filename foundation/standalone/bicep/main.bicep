@@ -14,8 +14,6 @@ param locationOpenAI string = 'canadaeast'
 param env string = 'dev'
 param postFix string = '-02'
 param globalName string = 'oai-standalone'
-@secure()
-param tempBastionPassword string = ''
 
 /*
   The address prefixes defined above represent the IP address ranges for different subnets in the virtual network used by each service.
@@ -88,6 +86,10 @@ param appServicePlanName string = 'asp-03-${env}${postFix}'
 param azFunctionName string = 'afn-a${globalName}-${env}${postFix}'
 param staticWebsiteName string = 'swa-a${globalName}-${env}${postFix}'
 
+param vmAdminUsername string = 'azureadmin'
+@secure()
+param vmAdminPassword string = ''
+
 module vnet './core/vnet.bicep' = {
   name: 'vnetnDeployment'
   params: {
@@ -115,7 +117,8 @@ module bastion './security/bastion.bicep' = {
     location: location
     bastion_subnet_id: vnet.outputs.subnets[2].id
     jumpbox_subnet_id: vnet.outputs.subnets[3].id
-    adminPassword: tempBastionPassword
+    adminUsername: vmAdminUsername
+    adminPassword: vmAdminPassword
   }
 }
 
