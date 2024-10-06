@@ -12,14 +12,14 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 choco install azure-cli -y
 # Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi
 
-# Install Terraform
-choco install terraform -y
+# # Install Terraform
+# choco install terraform -y
 
-# Install jq
-choco install jq -y
+# # Install jq
+# choco install jq -y
 
-# Install yq
-choco install yq -y
+# # Install yq
+# choco install yq -y
 
 # Install VS Code
 choco install vscode -y
@@ -27,10 +27,10 @@ choco install vscode -y
 # Install Git
 choco install git -y
 
-choco install openssl -y
+# choco install openssl -y
 
-# Install curl
-choco install curl -y
+# # Install curl
+# choco install curl -y
 
 # Install python
 choco install python -y
@@ -96,6 +96,9 @@ $powershellProfile > $PSHOME\Profile.ps1 # $PROFILE.CurrentUserAllHosts
 
 ## Restart Terminal
 
+## Testing if this works
+RefreshEnv.cmd
+
 # Install extensions in VS Code
 
 code --install-extension hashicorp.terraform
@@ -119,6 +122,6 @@ code --install-extension ms-azure-devops.azure-pipelines
 # az login --identity
 
 cd Desktop
-git clone https://github.com/HoussemDellai/aks-enterprise
-cd aks-enterprise
+git clone https://github.com/Azure/azure-openai-landing-zone
+cd azure-openai-landing-zone
 code .
