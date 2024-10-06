@@ -1,10 +1,9 @@
 param location string
 param bastion_subnet_id string
 param jumpbox_subnet_id string
-
+param adminUsername string
 @secure()
 param adminPassword string
-param adminUsername string
 
 resource bastionPublicIp 'Microsoft.Network/publicIPAddresses@2020-11-01' = {
   name: 'pip-bastion'
@@ -71,6 +70,7 @@ resource vmJumpbox 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       vmSize: 'Standard_D2s_v5' // 'Standard_B2ats_v2'
     }
     osProfile: {
+      computerName: adminUsername
       adminUsername: adminUsername
       adminPassword: adminPassword
       // customData: base64('Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString("https://chocolatey.org/install.ps1")); choco install azure-cli -y')
@@ -80,7 +80,7 @@ resource vmJumpbox 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       imageReference: {
         publisher: 'MicrosoftWindowsDesktop'
         offer: 'windows-11'
-        sku: 'win11-23h2-pro'
+        sku: 'win11-24h2-pro'
         version: 'latest'
       }
       osDisk: {
@@ -120,25 +120,13 @@ resource vmExtension 'Microsoft.Compute/virtualMachines/extensions@2024-07-01' =
   }
 }
 
-resource vmUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: 'identity-vm-jumpbox'
-  location: location
-}
-
-var roleDefinitionIdVar = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+var roleDefinitionId = resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
 
 resource contributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(roleDefinitionIdVar, resourceGroup().id)
+  name: guid(roleDefinitionId, resourceGroup().id, vmJumpbox.name)
   scope: resourceGroup()
   properties: {
-    // roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-    // roleDefinitionId: guid('8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
-    // roleDefinitionId: guid('/subscriptions/dcef7009-6b94-4382-afdc-17eb160d709a/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
-    // roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
     roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
     principalId: vmJumpbox.identity.principalId
   }
 }
-
-output name string = contributorRoleAssignment.name
-output resourceId string = contributorRoleAssignment.id

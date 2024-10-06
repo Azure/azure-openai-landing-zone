@@ -8,8 +8,8 @@ param createContainers bool = true
 @description('Specifies an array of containers to create.')
 param containerNames array
 
-@description('Specifies the workspace data retention in days.')
-param retentionInDays int = 60
+// @description('Specifies the workspace data retention in days.')
+// param retentionInDays int = 60
 
 @description('Specifies the location.')
 param location string

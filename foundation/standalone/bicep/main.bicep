@@ -249,7 +249,7 @@ module function './host/azfunctions.bicep' = {
     azureSearchIndex: searchIndexName
     azureSearchService: searchServiceModule.outputs.name
     //azureSearchServiceKey: ''
-    azureStorageContainerName: '${globalName}'
+    azureStorageContainerName: globalName
     formRecognizerService: privateEndpointFormRecogModule.outputs.name
     //formRecognizerServiceKey: ''
     runtimeName: 'python'

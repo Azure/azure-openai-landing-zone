@@ -10,6 +10,8 @@ param vnet_private_endpoint_subnet_id string
 param subnet_id string
 param vnetLocation string
 param deployments array = []
+param privateEndpointcognitiveName string
+param virtualNetworkId string
 
 resource cognitive 'Microsoft.CognitiveServices/accounts@2022-03-01' = {
   name: cognitiveName
@@ -29,14 +31,6 @@ resource cognitive 'Microsoft.CognitiveServices/accounts@2022-03-01' = {
     }
   }
 }
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
-
-param privateEndpointcognitiveName string
-param virtualNetworkId string
-
-
-
 
 resource dnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: privateDnsZoneName
@@ -100,9 +94,9 @@ resource deployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01
   name: deployment.name
   properties: {
     model: deployment.model
-    raiPolicyName: contains(deployment, 'raiPolicyName') ? deployment.raiPolicyName : null
+    raiPolicyName: deployment.?raiPolicyName ? deployment.raiPolicyName : null
   }
-  sku: contains(deployment, 'sku') ? deployment.sku : {
+  sku: deployment.?sku ? deployment.sku : {
     name: 'Standard'
     capacity: 20
   }

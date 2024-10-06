@@ -35,6 +35,15 @@ choco install curl -y
 # Install python
 choco install python -y
 
+# Install Node.js
+choco install nodejs -y
+
+# Install Azure Functions Core Tools
+choco install azure-functions-core-tools -y
+
+# install Powershell Core
+choco install powershell-core -y
+
 # # (Optional) Install Docker for Desktop
 # choco install docker-desktop -y
 # choco install docker-cli -y
@@ -84,7 +93,8 @@ $powershellProfile > $PSHOME\Profile.ps1 # $PROFILE.CurrentUserAllHosts
 
 ## Restart Terminal
 
-# # Install Terraform extension in VS Code
+# Install extensions in VS Code
+
 code --install-extension hashicorp.terraform
 code --install-extension ms-azuretools.vscode-azureterraform
 
@@ -105,27 +115,7 @@ code --install-extension ms-azure-devops.azure-pipelines
 
 # az login --identity
 
-# install Powershell Core
-choco install powershell-core -y
-
-cd .\Desktop\
+cd Desktop
 git clone https://github.com/HoussemDellai/aks-enterprise
 cd aks-enterprise
 code .
-
-
-
-
-<# Custom Script for Windows to install a file from Azure Storage using the staging folder created by the deployment script #>
-param (
-    [string]$artifactsLocation,
-    [string]$artifactsLocationSasToken,
-    [string]$folderName,
-    [string]$fileToInstall
-)
-
-$source = $artifactsLocation + "\$folderName\$fileToInstall" + $artifactsLocationSasToken
-$dest = "C:\WindowsAzure\$folderName"
-New-Item -Path $dest -ItemType directory
-Invoke-WebRequest $source -OutFile "$dest\$fileToInstall"
-
