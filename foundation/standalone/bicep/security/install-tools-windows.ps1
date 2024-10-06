@@ -38,6 +38,9 @@ choco install python -y
 # Install Node.js
 choco install nodejs -y
 
+# Use npm (from Node.js) to install the Static Web Apps CLI globally
+npm install -g @azure/static-web-apps-cli
+
 # Install Azure Functions Core Tools
 choco install azure-functions-core-tools -y
 
