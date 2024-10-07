@@ -67,14 +67,12 @@ resource vmJumpbox 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   }
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_D2s_v5' // 'Standard_B2ats_v2'
+      vmSize: 'Standard_D2s_v5'
     }
     osProfile: {
       computerName: adminUsername
       adminUsername: adminUsername
       adminPassword: adminPassword
-      // customData: base64('Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString("https://chocolatey.org/install.ps1")); choco install azure-cli -y')
-      // customData: base64(loadFileAsBase64('./install-tools-windows.ps1') // base64('./install-tools-windows.ps1')
     }
     storageProfile: {
       imageReference: {
