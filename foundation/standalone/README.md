@@ -93,22 +93,47 @@ Remember to monitor the resource usage and costs associated with this deployment
 ## 5. Recap of step by step installation
 
 ### Initial Infrastructure Deployment
+
 1. Use the "Deploy to Azure" button to initiate the infrastructure deployment through a pre-configured ARM or Bicep template.
 2. Monitor the deployment progress in the Azure portal and confirm the successful creation of the resources.
 
 
-### Manual Installation Scripts Execution on VM or Local Environment
-3. Connect to bastion using the user "azureadmin" and the password you have defined in the the template "tempBastionPassword" parameter.
-3. Download this repository to your local environment or VM if you have not done so yet.
-4. Scripts to install the pre requisites can be found in the folder: C:\Users\freddyayala\Documents\GitHub\azure-openai-landing-zone\foundation\standalone\prerequisites 
-4. Execute the `1.InstallDotNetFramework.ps1` to install the necessary .NET Framework components. Just right click on the script => Run with powershell. 
-5. Run `2.InstallNode.ps1` to install Node.js, which may be used by the frontend application. Reboot the system (VM or Local Environment) to ensure the installations take effect.
-6. Post-reboot, run `3.InstallAdditionalSoftware.ps1` to install any remaining required software such as the Azure CLI, Azure Functions Core Tools, Python, or others that the scripts cover.
+### Access to the JumpBox VM through Bastion
+
+3. Connect to bastion using the user `azureadmin` and the password you have defined in the the template "tempBastionPassword" parameter.
+
+4. Download this repository to your local environment or VM if you have not done so yet.
+
+```sh
+cd Desktop
+git clone https://github.com/Azure/azure-openai-landing-zone
+cd azure-openai-landing-zone
+code .
+```
+
+5. Check the floowing CLI tools are installed in the JumpBox VM:
+    - Azure CLI
+    - Azure Functions Core Tools
+    - Static Web Apps CLI
+    - NPM (Node Package Manager)
+
+```sh
+az --version
+func --version
+swa --version
+npm --version
+```
 
 ### Post-Installation Steps
-7. Use `az login --use-device-code` to authenticate to Azure if the default browser-based login is not suitable for your environment.
+
+You have 2 options here:
+
+7.1. Use the VM's system-assigned Managed Identity. This identity is automatically created when you deploy the VM and can be used to authenticate to Azure services without the need for credentials. Just make sure the Managed Identity has the necessary permissions to access the required resources. Then run `az login --identity` to authenticate to Azure.
+
+7.2. Use `az login --use-device-code` to authenticate to Azure if the default browser-based login is not suitable for your environment.
 
 ### Backend Deployment
+
 9. Navigate to the backend folder of your project in the terminal.
 10. Set your Azure subscription by executing `az account set --subscription "subscription-id"`.
 11. Publish your backend Azure Functions with the command: `func azure functionapp publish FunctionAppName --python`, replacing `FunctionAppName` with the correct name.
