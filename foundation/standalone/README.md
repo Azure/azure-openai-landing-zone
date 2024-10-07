@@ -64,7 +64,7 @@ Make sure to customise the name for the following parameters, otherwise you migh
 
 Using the Azure CLI, run the following commands to deploy the core infrastructure components. Replace  `ExampleDeployment`,  `ExampleGroup`, and  `storage.bicepparam`  with the name of your deployment, your Azure Resource Group, and your parameter file path, respectively.
 
-```shell
+```sh
 az deployment group create \
   --name ExampleDeployment \
   --resource-group ExampleGroup \
@@ -97,31 +97,32 @@ Remember to monitor the resource usage and costs associated with this deployment
 1. Use the "Deploy to Azure" button to initiate the infrastructure deployment through a pre-configured ARM or Bicep template.
 2. Monitor the deployment progress in the Azure portal and confirm the successful creation of the resources.
 
-
 ### Access to the JumpBox VM through Bastion
 
 3. Connect to bastion using the user `azureadmin` and the password you have defined in the the template "tempBastionPassword" parameter.
 
-4. Download this repository to your local environment or VM if you have not done so yet.
-
-```sh
-cd Desktop
-git clone https://github.com/Azure/azure-openai-landing-zone
-cd azure-openai-landing-zone
-code .
-```
-
-5. Check the floowing CLI tools are installed in the JumpBox VM:
+4. Check the floowing CLI tools are installed in the JumpBox VM:
     - Azure CLI
     - Azure Functions Core Tools
     - Static Web Apps CLI
     - NPM (Node Package Manager)
+    - Git
 
 ```sh
 az --version
 func --version
 swa --version
 npm --version
+git --version
+```
+
+5. Download this repository to your local environment or VM if you have not done so yet.
+
+```sh
+cd Desktop
+git clone https://github.com/Azure/azure-openai-landing-zone
+cd azure-openai-landing-zone
+code .
 ```
 
 ### Post-Installation Steps
