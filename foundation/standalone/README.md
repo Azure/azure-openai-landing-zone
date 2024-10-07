@@ -135,22 +135,32 @@ You have 2 options here:
 
 ### Backend Deployment
 
-9. Navigate to the backend folder of your project in the terminal.
+9. Navigate to the backend folder of your project in the terminal `cd 'foundation\standalone\app\backend'`.
 10. Set your Azure subscription by executing `az account set --subscription "subscription-id"`.
-11. Publish your backend Azure Functions with the command: `func azure functionapp publish FunctionAppName --python`, replacing `FunctionAppName` with the correct name.
+11. Publish your backend Azure Functions with the command below and replace FunctionAppName with the name of your Azure Function App.
+
+```sh
+func azure functionapp publish <FunctionAppName> --python
+```
 
 ### Frontend Deployment
-12. Navigate to the frontend directory in your project.
+
+12. Navigate to the frontend directory in your project `cd '..\frontend'`.
 13. Install frontend dependencies by running `npm install`.
 14. Build your frontend application with `npm run build`.
-15. Deploy your built frontend to Azure Static Web Apps with the command `swa deploy --env production --deployment-token your_deployment_token`.
+15. Deploy your built frontend to Azure Static Web Apps with the command 
+
+```sh
+swa deploy --env production --deployment-token <your_deployment_token>
+```
 
 ### Final Steps for Application Readiness
+
 16. After deployment, access the Static Web App URL to verify that your application is running.
 17. Navigate to the "Index your data" section of the application and attempt to upload a PDF file or any other file type supported by your application.
 18. Ensure all necessary environment variables and settings are correctly configured for both the backend and frontend.
 19. Test the entire application workflow end-to-end to confirm that all components are functioning together as expected.
-20. You can use the example pdf files in the path foundation\standalone\app\test_document to test text indexation.
+20. You can use the example pdf files in the path `foundation\standalone\app\test_document` to test text indexation.
 
 ## Additional Notes
 
