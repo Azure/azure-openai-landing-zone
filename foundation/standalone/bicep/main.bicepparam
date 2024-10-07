@@ -5,7 +5,7 @@ param locationFomsRecogniser = 'canadacentral'
 param locationStaticWebApp = 'westus2'
 param locationOpenAI = 'uksouth' // 'canadaeast'
 param env = 'dev'
-param postFix = '-83'
+param postFix = '-87'
 param globalName = 'aoai-stand'
 
 param vnet_name = 'vnet-ai-standalone${postFix}'
