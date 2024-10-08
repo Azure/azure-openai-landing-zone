@@ -65,7 +65,6 @@ resource passwordGenerator 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
     '''
     cleanupPreference: 'OnSuccess'
     retentionInterval: 'P1D'
-    
   }
 }
 

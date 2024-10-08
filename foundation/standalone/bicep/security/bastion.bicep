@@ -1,9 +1,12 @@
 param location string
 param bastion_subnet_id string
 param jumpbox_subnet_id string
+param adminUsername string
+@secure()
 param adminPassword string
-resource bastion_public_ip 'Microsoft.Network/publicIPAddresses@2020-11-01' = {
-  name: 'b59-bastion-pip'
+
+resource bastionPublicIp 'Microsoft.Network/publicIPAddresses@2020-11-01' = {
+  name: 'pip-bastion'
   location: location
   sku: {
     name: 'Standard'
@@ -14,9 +17,8 @@ resource bastion_public_ip 'Microsoft.Network/publicIPAddresses@2020-11-01' = {
   }
 }
 
-// Create the Azure Bastion resource
 resource bastion 'Microsoft.Network/bastionHosts@2020-11-01' = {
-  name: 'b59-bastion'
+  name: 'bst-bastion'
   location: location
   sku: {
     name: 'Basic'
@@ -28,7 +30,7 @@ resource bastion 'Microsoft.Network/bastionHosts@2020-11-01' = {
         properties: {
           privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
-            id: bastion_public_ip.id
+            id: bastionPublicIp.id
           }
           subnet: {
             id: bastion_subnet_id
@@ -39,8 +41,8 @@ resource bastion 'Microsoft.Network/bastionHosts@2020-11-01' = {
   }
 }
 
-resource jumpbox_nic 'Microsoft.Network/networkInterfaces@2021-02-01' = {
-  name: 'jumpboxNic'
+resource nicJumpbox 'Microsoft.Network/networkInterfaces@2021-02-01' = {
+  name: 'nic-vm-jumpbox'
   location: location
   properties: {
     ipConfigurations: [
@@ -57,27 +59,36 @@ resource jumpbox_nic 'Microsoft.Network/networkInterfaces@2021-02-01' = {
   }
 }
 
-resource jumpbox 'Microsoft.Compute/virtualMachines@2021-04-01' = {
-  name: 'vm-jumpbox-01'
+resource vmJumpbox 'Microsoft.Compute/virtualMachines@2024-07-01' = {
+  name: 'vm-jumpbox-win11'
   location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
+    priority: 'Spot'
+    evictionPolicy: 'Deallocate'
+    billingProfile: {
+        maxPrice: -1
+    }
     hardwareProfile: {
-      vmSize: 'Standard_DS2_v2'
+      vmSize: 'Standard_D2s_v5'
     }
     osProfile: {
-      computerName: 'jumpbox'
-      adminUsername: 'azureadmin'
-      adminPassword:  adminPassword
+      computerName: adminUsername
+      adminUsername: adminUsername
+      adminPassword: adminPassword
     }
     storageProfile: {
       imageReference: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2019-Datacenter'
+        publisher: 'MicrosoftWindowsDesktop'
+        offer: 'windows-11'
+        sku: 'win11-24h2-pro'
         version: 'latest'
       }
       osDisk: {
         createOption: 'FromImage'
+        name: 'osdisk-vm-jumpbox'
         managedDisk: {
           storageAccountType: 'Standard_LRS'
         }
@@ -87,9 +98,38 @@ resource jumpbox 'Microsoft.Compute/virtualMachines@2021-04-01' = {
     networkProfile: {
       networkInterfaces: [
         {
-          id: jumpbox_nic.id
+          id: nicJumpbox.id
         }
       ]
     }
+  }
+}
+
+resource vmExtension 'Microsoft.Compute/virtualMachines/extensions@2024-07-01' = {
+  parent: vmJumpbox
+  name: 'install-tools-windows'
+  location: location
+  properties: {
+    publisher: 'Microsoft.Compute'
+    type: 'CustomScriptExtension'
+    typeHandlerVersion: '1.10'
+    autoUpgradeMinorVersion: true
+    settings: {
+      fileUris: [
+        'https://raw.githubusercontent.com/HoussemDellai/azure-openai-landing-zone/refs/heads/branch-houssem/foundation/standalone/bicep/security/install-tools-windows.ps1'
+      ]
+      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File install-tools-windows.ps1'
+    }
+  }
+}
+
+var roleDefinitionId = resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+
+resource contributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(roleDefinitionId, resourceGroup().id, vmJumpbox.name)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+    principalId: vmJumpbox.identity.principalId
   }
 }

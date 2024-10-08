@@ -3,10 +3,7 @@ var roleDefIdSearchServiceQuery = '8ebe5a00-799e-43f5-93ac-243d3dce84a7' // Corr
 var roleDefIdKeyVaultSecretUser = 'f25e0fa2-a7c8-4377-a976-54943a77a395' // ID for "Key Vault Secrets User"
 var roleDefIdCognitiveOpenAIUser = '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' // ID for "Se
 
-
-
 param identityPrincipal string
-
 
 resource storageBlobDataContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(resourceGroup().id, roleDefinitionIdStorageBlobDataContributor, identityPrincipal)

@@ -10,6 +10,8 @@ param vnet_private_endpoint_subnet_id string
 param subnet_id string
 param vnetLocation string
 param deployments array = []
+param privateEndpointcognitiveName string
+param virtualNetworkId string
 
 resource cognitive 'Microsoft.CognitiveServices/accounts@2022-03-01' = {
   name: cognitiveName
@@ -29,14 +31,6 @@ resource cognitive 'Microsoft.CognitiveServices/accounts@2022-03-01' = {
     }
   }
 }
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
-
-param privateEndpointcognitiveName string
-param virtualNetworkId string
-
-
-
 
 resource dnsZones 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: privateDnsZoneName
