@@ -105,6 +105,8 @@ Remember to monitor the resource usage and costs associated with this deployment
     - Azure CLI
     - Azure Functions Core Tools
     - Static Web Apps CLI
+    - Python
+    - Node.js
     - NPM (Node Package Manager)
     - Git
 
@@ -112,6 +114,8 @@ Remember to monitor the resource usage and costs associated with this deployment
 az --version
 func --version
 swa --version
+py --version
+node --version
 npm --version
 git --version
 ```

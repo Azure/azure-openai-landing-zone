@@ -101,4 +101,5 @@ resource privateEndpointDnsZoneGroup 'Microsoft.Network/privateEndpoints/private
     ]
   }
 }
+
 output keyvaultId string = keyVault.id

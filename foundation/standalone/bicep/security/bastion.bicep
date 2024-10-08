@@ -66,6 +66,11 @@ resource vmJumpbox 'Microsoft.Compute/virtualMachines@2024-07-01' = {
     type: 'SystemAssigned'
   }
   properties: {
+    priority: 'Spot'
+    evictionPolicy: 'Deallocate'
+    billingProfile: {
+        maxPrice: -1
+    }
     hardwareProfile: {
       vmSize: 'Standard_D2s_v5'
     }
