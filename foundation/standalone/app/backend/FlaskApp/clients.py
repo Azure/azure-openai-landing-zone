@@ -5,15 +5,14 @@ from typing import List
 
 from openai import AzureOpenAI
 from azure.core.credentials import AzureKeyCredential
-from azure.identity import DefaultAzureCredential
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 from azure.search.documents import SearchClient
 from azure.search.documents.indexes import SearchIndexClient
 from azure.storage.blob import BlobServiceClient
 from langchain.utilities import BingSearchAPIWrapper
-from azure.identity import DefaultAzureCredential
-from azure.identity import get_bearer_token_provider
 
-# Replace these with your own values, either in environment variables or directly here
+# Environment Variables
+USE_MANAGED_IDENTITIES = os.environ.get("USE_MANAGED_IDENTITIES") == "true"
 AZURE_FORM_RECOGNIZER_KEY = os.environ.get("AZURE_FORM_RECOGNIZER_KEY") or None
 AZURE_FORM_RECOGNIZER_SERVICE = os.environ.get("AZURE_FORM_RECOGNIZER_SERVICE") or "myformrecognizer"
 AZURE_OPENAI_CHATGPT_DEPLOYMENT = os.environ.get("AZURE_OPENAI_CHATGPT_DEPLOYMENT") or "gpt-35-turbo"
@@ -55,122 +54,107 @@ api_endpoints = [
     {"base_url": f"https://{AZURE_OPENAI_SERVICE_3}.openai.azure.com", "key": f"{AZURE_OPENAI_SERVICE_3_KEY}"},
 ]
 
-# Define a function to get a random endpoint from the list
+# Function to get a random endpoint
 def get_random_endpoint():
-    endpoint = random.choice(api_endpoints)
-    return endpoint
+    return random.choice(api_endpoints)
 
-# If you encounter a blocking error during a DefaultAzureCredntial resolution, you can exclude the problematic credential by using a parameter (ex. exclude_shared_token_cache_credential=True)
+# Set up managed identity or key-based credentials
 azure_credential = DefaultAzureCredential()
 
-index_client = SearchIndexClient(endpoint=f"https://{AZURE_SEARCH_SERVICE}.search.windows.net/",
-                                 credential=AzureKeyCredential(AZURE_SEARCH_KEY))
+def get_search_client():
+    return SearchClient(
+        endpoint=f"https://{AZURE_SEARCH_SERVICE}.search.windows.net",
+        index_name=AZURE_SEARCH_INDEX,
+        credential=azure_credential if USE_MANAGED_IDENTITIES else AzureKeyCredential(AZURE_SEARCH_KEY))
 
-# Set up clients for Cognitive Search and Storage
-search_client = SearchClient(
-    endpoint=f"https://{AZURE_SEARCH_SERVICE}.search.windows.net",
-    index_name=AZURE_SEARCH_INDEX,
-    credential=AzureKeyCredential(AZURE_SEARCH_KEY))
-blob_client = BlobServiceClient(
-    account_url=f"https://{AZURE_STORAGE_ACCOUNT}.blob.core.windows.net",
-    credential=azure_credential)
-blob_container = blob_client.get_container_client(AZURE_STORAGE_CONTAINER)
+def get_blob_client():
+    return BlobServiceClient(
+        account_url=f"https://{AZURE_STORAGE_ACCOUNT}.blob.core.windows.net",
+        credential=azure_credential if USE_MANAGED_IDENTITIES else AzureKeyCredential(AZURE_STORAGE_KEY))
 
-default_creds = azure_credential if AZURE_STORAGE_KEY == None else AzureKeyCredential(
-    AZURE_STORAGE_KEY)
-# search_creds = azure_credential if AZURE_SEARCH_KEY == None else AzureKeyCredential(
-#     AZURE_SEARCH_KEY)
-formrecognizer_creds = azure_credential if AZURE_FORM_RECOGNIZER_KEY == None else AzureKeyCredential(
-    AZURE_FORM_RECOGNIZER_KEY)
+def get_form_recognizer_creds():
+    return azure_credential if USE_MANAGED_IDENTITIES else AzureKeyCredential(AZURE_FORM_RECOGNIZER_KEY)
+
+def get_openai_client(endpoint):
+    if USE_MANAGED_IDENTITIES:
+        token_provider = get_bearer_token_provider(
+            azure_credential, "https://cognitiveservices.azure.com/.default"
+        )
+        return AzureOpenAI(
+            azure_endpoint=endpoint,
+            azure_ad_token_provider=token_provider,
+            api_version="2023-12-01-preview"
+        )
+    else:
+        return AzureOpenAI(
+            azure_endpoint=endpoint,
+            azure_api_key=OPENAI_TOKEN,
+            api_version="2023-12-01-preview"
+        )
+
+# Create clients
+search_client = get_search_client()
+blob_client = get_blob_client()
+formrecognizer_creds = get_form_recognizer_creds()
+endpoint = get_random_endpoint()['base_url']
+azure_openai_client = get_openai_client(endpoint)
 
 try:
     bing_search_client = BingSearchAPIWrapper(
         bing_subscription_key=BING_SUBSCRIPTION_KEY, bing_search_url=BING_SEARCH_URL)
 except Exception as e:
-    logging.error(
-        f"Error creating Bing Search client: {str(e)}")
+    logging.error(f"Error creating Bing Search client: {str(e)}")
     bing_search_client = None
-try:
-    bing_search_client = BingSearchAPIWrapper(
-        bing_subscription_key=BING_SUBSCRIPTION_KEY, bing_search_url=BING_SEARCH_URL)
-except Exception as e:
-    logging.error(
-        f"Error creating Bing Search client: {str(e)}")
-    bing_search_client = None
-
-def ensure_openai_token():
-    global openai_token
-    # if openai_token.expires_on < int(time.time()) - 60:
-    #     openai_token = azure_credential.get_token(
-    #         "https://cognitiveservices.azure.com/.default")
-    #     openai.api_key = openai_token.token
 
 def completion_client(prompt, max_tokens, temperature, n, stop, deployment_name):
     logging.info(f"completion client")
-   
-    token_provider = get_bearer_token_provider(
-        DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
-    )
-    logging.info(f"token: ${token_provider}")
+    
     endpoint = get_random_endpoint()['base_url']
-    logging.info(f"endpoint ${endpoint}")
-    azure_openai_client = AzureOpenAI(
-    azure_endpoint=endpoint,  # Update with actual endpoint from your environment variables
-    azure_ad_token_provider=token_provider,
-    api_version= "2023-12-01-preview" # Update with actual API version from your environment variables
-    )        
-    # Use the `chat.completions.create` method provided by the Azure OpenAI client
-    logging.info(f"beforecompletion")
+    azure_openai_client = get_openai_client(endpoint)
+    
     response = azure_openai_client.chat.completions.create(
-    model=deployment_name,
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": prompt}
-    ],
-    temperature=temperature,
-    max_tokens=max_tokens,
-    n=n,
-    stop=stop
-        )
-    logging.info(f"response ${response}")
+        model=deployment_name,
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=temperature,
+        max_tokens=max_tokens,
+        n=n,
+        stop=stop
+    )
+    logging.info(f"response {response}")
     if response.choices:
-        choice = response.choices[0]  # Get the first choice, assuming there's at least one choice.
+        choice = response.choices[0]
         if hasattr(choice, 'message') and hasattr(choice.message, 'content'):
-            completion = choice.message.content  # The actual content of the completion.
+            return choice.message.content
         else:
             logging.error("The choice does not have a 'message' attribute or its 'message' has no 'content'.")
     else:
-        logging.error("The response contains no choices.")      
-    logging.info(f"completion ${completion}")
-    return completion
-    
-            
-        
+        logging.error("The response contains no choices.")
+
+    return None
+
 class NewAzureOpenAI(AzureOpenAI):
     stop: List[str] = None
     @property
     def _invocation_params(self):
         params = super()._invocation_params
-        # fix InvalidRequestError: logprobs, best_of and echo parameters are not available on gpt-35-turbo model.
         params.pop('logprobs', None)
         params.pop('best_of', None)
         params.pop('echo', None)
-        # params['stop'] = self.stop
         return params
 
 def llm_client(deployment_name, overrides):
-            logging.info(f"llmclient")
-            token_provider = get_bearer_token_provider(
-            DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
-            )
-            logging.info(f"token ${token_provider}")
-            aoai_endpoint = get_random_endpoint()
+    logging.info("llmclient")
 
-            logging.info(f"Using Azure OpenAI endpoint: {aoai_endpoint['base_url']}")
-            logging.info(f"Using Azure GPT deployment: {AZURE_OPENAI_GPT_DEPLOYMENT}")
+    endpoint = get_random_endpoint()
+    azure_openai_client = get_openai_client(endpoint)
 
-           
-
-            llm = NewAzureOpenAI(deployment_name=deployment_name, temperature=overrides.get("temperature") or 0.3, openai_api_key=token_provider, stop=["\n"]) # type: ignore
-            return llm
-        
+    llm = NewAzureOpenAI(
+        deployment_name=deployment_name,
+        temperature=overrides.get("temperature") or 0.3,
+        openai_api_key=azure_openai_client.api_key if not USE_MANAGED_IDENTITIES else None,
+        stop=["\n"]
+    )
+    return llm
