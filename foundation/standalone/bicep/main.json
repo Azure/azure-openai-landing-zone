@@ -4,14 +4,14 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "8318044780697168876"
+      "version": "0.30.23.60470",
+      "templateHash": "10691603172129422341"
     }
   },
   "parameters": {
     "location": {
       "type": "string",
-      "defaultValue": "canadaeast"
+      "defaultValue": "swedencentral"
     },
     "locationFomsRecogniser": {
       "type": "string",
@@ -36,10 +36,6 @@
     "globalName": {
       "type": "string",
       "defaultValue": "oai-standalone"
-    },
-    "tempBastionPassword": {
-      "type": "securestring",
-      "defaultValue": ""
     },
     "vnet_name": {
       "type": "string",
@@ -115,7 +111,7 @@
     },
     "keyvaultName": {
       "type": "string",
-      "defaultValue": "[format('kv-{0}-{1}{2}', parameters('globalName'), parameters('env'), parameters('postFix'))]"
+      "defaultValue": "[format('kv{0}{1}{2}', parameters('globalName'), parameters('env'), parameters('postFix'))]"
     },
     "keyvaultPleName": {
       "type": "string",
@@ -168,6 +164,14 @@
     "staticWebsiteName": {
       "type": "string",
       "defaultValue": "[format('swa-a{0}-{1}{2}', parameters('globalName'), parameters('env'), parameters('postFix'))]"
+    },
+    "vmAdminUsername": {
+      "type": "string",
+      "defaultValue": "azureadmin"
+    },
+    "vmAdminPassword": {
+      "type": "securestring",
+      "defaultValue": ""
     }
   },
   "variables": {
@@ -240,8 +244,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "4726305413826950932"
+              "version": "0.30.23.60470",
+              "templateHash": "5897925052350231067"
             }
           },
           "parameters": {
@@ -381,8 +385,11 @@
           "jumpbox_subnet_id": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnetnDeployment'), '2022-09-01').outputs.subnets.value[3].id]"
           },
+          "adminUsername": {
+            "value": "[parameters('vmAdminUsername')]"
+          },
           "adminPassword": {
-            "value": "[parameters('tempBastionPassword')]"
+            "value": "[parameters('vmAdminPassword')]"
           }
         },
         "template": {
@@ -391,8 +398,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10681104787660590719"
+              "version": "0.30.23.60470",
+              "templateHash": "12973243062495796530"
             }
           },
           "parameters": {
@@ -405,15 +412,21 @@
             "jumpbox_subnet_id": {
               "type": "string"
             },
-            "adminPassword": {
+            "adminUsername": {
               "type": "string"
+            },
+            "adminPassword": {
+              "type": "securestring"
             }
+          },
+          "variables": {
+            "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]"
           },
           "resources": [
             {
               "type": "Microsoft.Network/publicIPAddresses",
               "apiVersion": "2020-11-01",
-              "name": "b59-bastion-pip",
+              "name": "pip-bastion",
               "location": "[parameters('location')]",
               "sku": {
                 "name": "Standard"
@@ -426,7 +439,7 @@
             {
               "type": "Microsoft.Network/bastionHosts",
               "apiVersion": "2020-11-01",
-              "name": "b59-bastion",
+              "name": "bst-bastion",
               "location": "[parameters('location')]",
               "sku": {
                 "name": "Basic"
@@ -438,7 +451,7 @@
                     "properties": {
                       "privateIPAllocationMethod": "Dynamic",
                       "publicIPAddress": {
-                        "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'b59-bastion-pip')]"
+                        "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-bastion')]"
                       },
                       "subnet": {
                         "id": "[parameters('bastion_subnet_id')]"
@@ -448,13 +461,13 @@
                 ]
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', 'b59-bastion-pip')]"
+                "[resourceId('Microsoft.Network/publicIPAddresses', 'pip-bastion')]"
               ]
             },
             {
               "type": "Microsoft.Network/networkInterfaces",
               "apiVersion": "2021-02-01",
-              "name": "jumpboxNic",
+              "name": "nic-vm-jumpbox",
               "location": "[parameters('location')]",
               "properties": {
                 "ipConfigurations": [
@@ -472,27 +485,36 @@
             },
             {
               "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2021-04-01",
-              "name": "vm-jumpbox-01",
+              "apiVersion": "2024-07-01",
+              "name": "vm-jumpbox-win11",
               "location": "[parameters('location')]",
+              "identity": {
+                "type": "SystemAssigned"
+              },
               "properties": {
+                "priority": "Spot",
+                "evictionPolicy": "Deallocate",
+                "billingProfile": {
+                  "maxPrice": -1
+                },
                 "hardwareProfile": {
-                  "vmSize": "Standard_DS2_v2"
+                  "vmSize": "Standard_D2s_v5"
                 },
                 "osProfile": {
-                  "computerName": "jumpbox",
-                  "adminUsername": "azureadmin",
+                  "computerName": "[parameters('adminUsername')]",
+                  "adminUsername": "[parameters('adminUsername')]",
                   "adminPassword": "[parameters('adminPassword')]"
                 },
                 "storageProfile": {
                   "imageReference": {
-                    "publisher": "MicrosoftWindowsServer",
-                    "offer": "WindowsServer",
-                    "sku": "2019-Datacenter",
+                    "publisher": "MicrosoftWindowsDesktop",
+                    "offer": "windows-11",
+                    "sku": "win11-24h2-pro",
                     "version": "latest"
                   },
                   "osDisk": {
                     "createOption": "FromImage",
+                    "name": "osdisk-vm-jumpbox",
                     "managedDisk": {
                       "storageAccountType": "Standard_LRS"
                     },
@@ -502,13 +524,46 @@
                 "networkProfile": {
                   "networkInterfaces": [
                     {
-                      "id": "[resourceId('Microsoft.Network/networkInterfaces', 'jumpboxNic')]"
+                      "id": "[resourceId('Microsoft.Network/networkInterfaces', 'nic-vm-jumpbox')]"
                     }
                   ]
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', 'jumpboxNic')]"
+                "[resourceId('Microsoft.Network/networkInterfaces', 'nic-vm-jumpbox')]"
+              ]
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines/extensions",
+              "apiVersion": "2024-07-01",
+              "name": "[format('{0}/{1}', 'vm-jumpbox-win11', 'install-tools-windows')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.10",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                  "fileUris": [
+                    "https://raw.githubusercontent.com/HoussemDellai/azure-openai-landing-zone/refs/heads/branch-houssem/foundation/standalone/bicep/security/install-tools-windows.ps1"
+                  ],
+                  "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File install-tools-windows.ps1"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', 'vm-jumpbox-win11')]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(variables('roleDefinitionId'), resourceGroup().id, 'vm-jumpbox-win11')]",
+              "properties": {
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                "principalId": "[reference(resourceId('Microsoft.Compute/virtualMachines', 'vm-jumpbox-win11'), '2024-07-01', 'full').identity.principalId]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', 'vm-jumpbox-win11')]"
               ]
             }
           ]
@@ -550,8 +605,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "9106277529090712347"
+              "version": "0.30.23.60470",
+              "templateHash": "4264305471308072984"
             }
           },
           "parameters": {
@@ -744,8 +799,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10892810748835614027"
+              "version": "0.30.23.60470",
+              "templateHash": "1840103936482695624"
             }
           },
           "parameters": {
@@ -904,7 +959,7 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[parameters('locationOpenAI')]"
           },
           "privateEndpointcognitiveName": {
             "value": "[parameters('privateEndpointOpenAIName')]"
@@ -931,7 +986,7 @@
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnetnDeployment'), '2022-09-01').outputs.subnets.value[1].id]"
           },
           "vnetLocation": {
-            "value": "[parameters('locationOpenAI')]"
+            "value": "[parameters('location')]"
           },
           "deployments": {
             "value": "[variables('defaultOpenAiDeployments')]"
@@ -943,8 +998,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "17257426056515407006"
+              "version": "0.30.23.60470",
+              "templateHash": "1177492641220824320"
             }
           },
           "parameters": {
@@ -1154,8 +1209,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "17257426056515407006"
+              "version": "0.30.23.60470",
+              "templateHash": "1177492641220824320"
             }
           },
           "parameters": {
@@ -1355,8 +1410,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "2563184145208215987"
+              "version": "0.30.23.60470",
+              "templateHash": "1958127606806883508"
             }
           },
           "parameters": {
@@ -1378,13 +1433,6 @@
               "type": "array",
               "metadata": {
                 "description": "Specifies an array of containers to create."
-              }
-            },
-            "retentionInDays": {
-              "type": "int",
-              "defaultValue": 60,
-              "metadata": {
-                "description": "Specifies the workspace data retention in days."
               }
             },
             "location": {
@@ -1597,8 +1645,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "15068429096994412860"
+              "version": "0.30.23.60470",
+              "templateHash": "9209741971845732805"
             }
           },
           "parameters": {
@@ -1687,7 +1735,7 @@
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploySearchServiceWithPrivateEndpoint'), '2022-09-01').outputs.name.value]"
           },
           "azureStorageContainerName": {
-            "value": "[format('{0}', parameters('globalName'))]"
+            "value": "[parameters('globalName')]"
           },
           "formRecognizerService": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'PrivateEndpointFormRecogDeployment'), '2022-09-01').outputs.name.value]"
@@ -1708,8 +1756,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "320696951090410244"
+              "version": "0.30.23.60470",
+              "templateHash": "1523638081456753019"
             }
           },
           "parameters": {
@@ -2047,8 +2095,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "2523913532472577694"
+              "version": "0.30.23.60470",
+              "templateHash": "5555424111013826178"
             }
           },
           "parameters": {
@@ -2139,8 +2187,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "12784384008674832516"
+              "version": "0.30.23.60470",
+              "templateHash": "7788749024803844488"
             }
           },
           "parameters": {
